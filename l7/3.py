@@ -12,7 +12,7 @@ while True:
     c = input('enter character to search (enter to exit): ')
     if len(c) == 1:
         if c in d:
-            print(c, "=>    ", d[c])
+            print(c, "=>", d[c])
         else:
             print("no", c, "in dictionary")
     elif len(c) == 0:
