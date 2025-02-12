@@ -1,12 +1,11 @@
 #include <iostream>
 #include <cmath>
 #include <string>
-#include "../get_valid_double.hpp"
+#include "../get_valid_input.hpp"
 
 int main() {
-    double a;
     cout << "enter valid float: ";
-    while(!getValidDouble(a));
+    double a = getValidInput();
     cout << "entered " << a << endl;
 
     double result = a * a * (M_PI - 1);
