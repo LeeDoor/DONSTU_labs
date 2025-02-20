@@ -3,9 +3,11 @@
 using namespace std;
 
 template <typename T = double>
-T getValidInput() {
+T getValidInput(int id = -1) {
     T d;
-    cout << "enter number: ";
+    cout << "enter number";
+    if(id >= 0) cout << " #" << id << ": ";
+    else cout << ": ";
     char pk;
     do{
         cin >> d;
