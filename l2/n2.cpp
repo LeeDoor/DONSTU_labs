@@ -7,7 +7,7 @@ int main () {
     srand(time(NULL));
     double arr[ARR_SIZE];
     for(int i = 0; i < ARR_SIZE; ++i) {
-        *(arr + i) = (rand() % 20100 - 10000) / 100.0;
+        *(arr + i) = (rand() % 20001 - 10000) / 100.0;
         cout << *(arr + i) << " ";
     }
     cout << endl;
