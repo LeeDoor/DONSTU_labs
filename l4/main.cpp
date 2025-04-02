@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#include <io.h>      // For _setmode
+#include <fcntl.h>   // For _O_U16TEXT
 int is_latin(wchar_t c) {
     return L'a' <= c && c <= L'z';
 }
@@ -15,7 +17,7 @@ int is_cyrillic(wchar_t c) {
     b = sw
 
 int main() {
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, "en_US.UTF-8");
 #define BUF_SIZE 200
     wchar_t buffer[BUF_SIZE];
     wprintf(L"Enter line: ");
@@ -23,6 +25,7 @@ int main() {
     wprintf(L"Initial line: %ls", buffer); // NEW-LINE terminated 
     size_t cyr = 0, lat = 0, strs = 0;
     for (size_t i = 0; buffer[i] != L'\n'; ++i, ++strs) {
+        wprintf(L"%zd\n", buffer[i]);
         cyr += is_cyrillic(buffer[i]);
         lat += is_latin(buffer[i]);
     }
