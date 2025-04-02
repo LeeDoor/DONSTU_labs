@@ -5,12 +5,14 @@
 #include <io.h>      // For _setmode
 #include <fcntl.h>   // For _O_U16TEXT
 int is_latin(wchar_t c) {
-    return L'a' <= c && c <= L'z';
+    return L'a' <= c && c <= L'z' || L'A' <= c && c <= L'Z';
 }
 int is_cyrillic(wchar_t c) {
-    return L'а' <= c && c <= L'я';
+    return L'а' <= c && c <= L'я' || L'А' <= c && c <= L'Я';
 }
-
+bool is_white(wchar_t c) {
+    return c == L' ' || c == L'\t';
+}
 #define SWAP(a, b) \
     wchar_t sw = a; \
     a = b; \
@@ -32,10 +34,13 @@ int main() {
     wprintf(L"cyrillic letters: %zd\n"
             L"latin letters: %zd\n",
             cyr, lat);
-    for(size_t i = 0; i < strs - 1; ++i) {
+    for(int i = strs - 1; i >= 1; --i) {
+        if(is_white(buffer[i]) || is_white(buffer[i - 1])) {
+            continue;
+        }
         wchar_t swap = buffer[i];
-        buffer[i] = buffer[i + 1];
-        buffer[i + 1] = swap;
+        buffer[i] = buffer[i - 1];
+        buffer[i - 1] = swap;
     }
     wprintf(L"Edited line: %ls\n", buffer);
     return 0;
