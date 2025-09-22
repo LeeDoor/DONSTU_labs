@@ -7,6 +7,7 @@ void print_header() {
         << "====================" << std::endl
         << "RAM SIZE: "   << RAMModel::RAM_SIZE   << std::endl
         << "CHUNK SIZE: " << RAMModel::CHUNK_ARRAY << std::endl
+        << "LISTS SIZE: " << RAMModel::LISTS_ARRAY << std::endl
         << "ARRAY SIZE: " << RAMModel::ARRAY_SIZE << std::endl
         << "====================" << std::endl
     ;
