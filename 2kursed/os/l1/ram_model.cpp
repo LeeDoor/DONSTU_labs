@@ -1,13 +1,13 @@
 #include "ram_model.hpp"
 #include <iostream>
 
-int RAMModel::closest_pw2(unsigned n) {
+unsigned RAMModel::closest_pw2(unsigned n) {
     if (n == 0) return 1;
     if (n == 1) return 1;
 
     unsigned int power = 1;
-    while (power < n) {
-        power <<= 1;
+    while ((1 << power) < n) {
+        ++power;
     }
     return power;
 }
@@ -24,10 +24,39 @@ RAMModel::RAMModel() {
 
 /*! throws std::bad_alloc */
 size_t RAMModel::allocate(size_t bytes) {
+    unsigned chunk_pw2 = closest_pw2(bytes);
+    while((1 << chunk_pw2) < CHUNK_SIZE) 
+        ++chunk_pw2;
+    if(chunk_pw2 > POWER2_OF_RAM) throw std::bad_alloc();
+    unsigned block_list_id = (1 << (POWER2_OF_RAM - chunk_pw2)) - 1;
+    DataBlock* closest;
+    do get_last_free_block(block_list_id++);
+    while(!closest->taken);
+    std::cout << "selected block: " << closest->address << std::endl;
     return 0;
 }
+
+RAMModel::DataBlock* RAMModel::get_last_free_block(unsigned block_id) {
+    DataBlock* block = get_data_block_at(block_id);
+    while(block->taken) {
+        auto next = get_data_block_at(block->next);
+        if(block == next) return block;
+        block = next;
+    }
+    return block;
+}
+
 void RAMModel::free(size_t address) {
     std::cout << "Freeing " << address << "\n";
+}
+RAMModel::DataBlock* RAMModel::get_data_block_at(unsigned ith) {
+    if(ith > POWER2_OF_RAM - 8) throw std::bad_alloc();
+    return reinterpret_cast<DataBlock*>(data_.data() + sizeof(DataBlock) * ith);
+}
+
+void RAMModel::print_diagnostics() {
+    print_bitmap_diagnostics();
+    print_lists_diagnostics();
 }
 void RAMModel::print_bitmap_diagnostics() {
     constexpr auto start = LISTS_ARRAY + RAM_SIZE;
@@ -48,7 +77,7 @@ void RAMModel::print_bitmap_diagnostics() {
 void RAMModel::print_lists_diagnostics() {
     constexpr auto start = 0;
     constexpr auto end = start + LISTS_ARRAY;
-    
+
     unsigned step = 0;
     for(unsigned cur_block_size = POWER2_OF_RAM; (1 << cur_block_size) >= CHUNK_SIZE; --cur_block_size) {
         DataBlock* cur = get_data_block_at(step);
@@ -62,11 +91,3 @@ void RAMModel::print_lists_diagnostics() {
     }
 }
 
-RAMModel::DataBlock* RAMModel::get_data_block_at(unsigned ith) {
-    return reinterpret_cast<DataBlock*>(data_.data() + sizeof(DataBlock) * ith);
-}
-
-void RAMModel::print_diagnostics() {
-    print_lists_diagnostics();
-    print_bitmap_diagnostics();
-}

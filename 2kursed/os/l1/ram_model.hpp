@@ -27,10 +27,11 @@ public:
     void print_diagnostics();
 
 private:
-    static int closest_pw2(unsigned n);
+    static unsigned closest_pw2(unsigned n);
     DataBlock* get_data_block_at(unsigned ith);
     void print_bitmap_diagnostics();
     void print_lists_diagnostics();
+    DataBlock* get_last_free_block(unsigned block_id);
 
     std::array<char, ARRAY_SIZE> data_;
 };
