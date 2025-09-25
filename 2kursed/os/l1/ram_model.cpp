@@ -1,170 +1,202 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <math.h>
 #include "ram_model.hpp"
-#include <cstring>
-#include <iostream>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <cmath>
-#include <iostream>
-#include <vector>
-#include <map>
-#include <cmath>
 
 #define MEMORY_SIZE 1024
-#define BLOCK_SIZE 8
-#define BITMAP_SIZE ((MEMORY_SIZE / BLOCK_SIZE + 7) / 8)
+#define MIN_BLOCK_SIZE 64  
 
-unsigned char memory[MEMORY_SIZE];
-unsigned char bitmap[BITMAP_SIZE];
-std::map<int, std::vector<std::pair<int, int>>> buddy_allocated_blocks;
+uint8_t memory[MEMORY_SIZE + (MEMORY_SIZE / MIN_BLOCK_SIZE + 7) / 8];
 
-void RAMModel::set_bit(int position, int value) {
-    int byte_index = position / 8;
-    int bit_index = position % 8;
+typedef struct block_info {
+    uint16_t size;         
+    uint16_t is_free;     
+    uint16_t process_id; 
+    struct block_info* next; 
+} block_info;
+
+void set_bit(uint16_t position, int value) {
+    uint16_t byte_index = position / 8;
+    uint16_t bit_index = position % 8;
     
     if (value) {
-        bitmap[byte_index] |= (1 << bit_index);
+        memory[MEMORY_SIZE + byte_index] |= (1 << bit_index);
     } else {
-        bitmap[byte_index] &= ~(1 << bit_index);
+        memory[MEMORY_SIZE + byte_index] &= ~(1 << bit_index);
     }
 }
 
-int RAMModel::get_bit(int position) {
-    int byte_index = position / 8;
-    int bit_index = position % 8;
-    return (bitmap[byte_index] >> bit_index) & 1;
+int get_bit(uint16_t position) {
+    uint16_t byte_index = position / 8;
+    uint16_t bit_index = position % 8;
+    return (memory[MEMORY_SIZE + byte_index] >> bit_index) & 1;
 }
 
-int RAMModel::allocate_block(int size) {
-    int blocks_needed = (size + BLOCK_SIZE - 1) / BLOCK_SIZE;
-    int consecutive_free = 0;
-    int start_block = -1;
+uint16_t find_nearest_power_of_two(uint16_t size) {
+    uint16_t power = 1;
+    while (power < size) {
+        power <<= 1;
+    }
+    return power > MEMORY_SIZE ? MEMORY_SIZE : power;
+}
+
+block_info* get_block_header(uint16_t address) {
+    return (block_info*)&memory[address];
+}
+
+void initialize_memory() {
+    memset(memory, 0, sizeof(memory));
     
-    for (int i = 0; i < MEMORY_SIZE / BLOCK_SIZE; i++) {
-        if (get_bit(i) == 0) {
-            if (consecutive_free == 0) {
-                start_block = i;
-            }
-            consecutive_free++;
-            
-            if (consecutive_free >= blocks_needed) {
-                for (int j = start_block; j < start_block + blocks_needed; j++) {
-                    set_bit(j, 1);
+    uint16_t bitmap_size = (MEMORY_SIZE / MIN_BLOCK_SIZE + 7) / 8;
+    for (uint16_t i = 0; i < bitmap_size; i++) {
+        memory[MEMORY_SIZE + i] = 0; 
+    }
+    
+    block_info* first_block = (block_info*)memory;
+    first_block->size = MEMORY_SIZE - sizeof(block_info);
+    first_block->is_free = 1;
+    first_block->process_id = 0;
+    first_block->next = NULL;
+}
+
+uint16_t allocate_binary_buddy(uint16_t size, uint16_t process_id) {
+    if (size == 0 || size > MEMORY_SIZE - sizeof(block_info)) {
+        printf("Ошибка: недопустимый размер %u\n", size);
+        return 0;
+    }
+    
+    uint16_t required_size = size + sizeof(block_info);
+    uint16_t block_size = find_nearest_power_of_two(required_size);
+    
+    block_info* current = (block_info*)memory;
+    block_info* prev = NULL;
+    
+    while (current != NULL) {
+        uint16_t current_addr = (uint16_t)((uint8_t*)current - memory);
+        
+        if (current->is_free && current->size >= size) {
+            if (current->size >= block_size) {
+                while (current->size >= block_size * 2 && 
+                       block_size * 2 <= MEMORY_SIZE - current_addr - sizeof(block_info)) {
+                    block_info* buddy = (block_info*)((uint8_t*)current + block_size);
+                    buddy->size = current->size - block_size - sizeof(block_info);
+                    buddy->is_free = 1;
+                    buddy->process_id = 0;
+                    buddy->next = current->next;
+                    
+                    current->size = block_size - sizeof(block_info);
+                    current->next = buddy;
+                    
+                    block_size *= 2;
                 }
                 
-                int actual_size = blocks_needed * BLOCK_SIZE;
-                int buddy_size = 1;
-                while (buddy_size * 2 <= actual_size) {
-                    buddy_size *= 2;
+                current->is_free = 0;
+                current->process_id = process_id;
+                
+                uint16_t start_block = current_addr / MIN_BLOCK_SIZE;
+                uint16_t end_block = (current_addr + sizeof(block_info) + size - 1) / MIN_BLOCK_SIZE;
+                
+                for (uint16_t i = start_block; i <= end_block; i++) {
+                    set_bit(i, 1);
                 }
                 
-                buddy_allocated_blocks[buddy_size].push_back({start_block * BLOCK_SIZE, actual_size});
-                return start_block * BLOCK_SIZE;
+                return current_addr + sizeof(block_info);
             }
-        } else {
-            consecutive_free = 0;
-            start_block = -1;
         }
+        
+        prev = current;
+        current = current->next;
     }
     
-    return -1;
+    printf("Ошибка: недостаточно памяти для выделения %u байт\n", size);
+    return 0;
 }
 
-void RAMModel::free_block(int address) {
-    int start_block = address / BLOCK_SIZE;
-    
-    if (address < 0 || address >= MEMORY_SIZE || address % BLOCK_SIZE != 0) {
-        std::cout << "Error: Invalid address" << std::endl;
+void free_binary_buddy(uint16_t address) {
+    if (address < sizeof(block_info) || address >= MEMORY_SIZE) {
+        printf("Ошибка: недопустимый адрес %u\n", address);
         return;
     }
     
-    if (get_bit(start_block) == 0) {
-        std::cout << "Error: Block is already free" << std::endl;
+    uint16_t header_addr = address - sizeof(block_info);
+    block_info* block = get_block_header(header_addr);
+    
+    if (block->is_free) {
+        printf("Ошибка: блок по адресу %u уже свободен\n", address);
         return;
     }
     
-    for (auto& [size, blocks] : buddy_allocated_blocks) {
-        for (auto it = blocks.begin(); it != blocks.end(); ++it) {
-            if (it->first == address) {
-                blocks.erase(it);
-                if (blocks.empty()) {
-                    buddy_allocated_blocks.erase(size);
-                }
-                break;
-            }
-        }
-    }
+    block->is_free = 1;
+    uint16_t process_id = block->process_id;
+    block->process_id = 0;
     
-    int i = start_block;
-    while (i < MEMORY_SIZE / BLOCK_SIZE && get_bit(i) == 1) {
+    uint16_t start_block = header_addr / MIN_BLOCK_SIZE;
+    uint16_t end_block = (header_addr + sizeof(block_info) + block->size - 1) / MIN_BLOCK_SIZE;
+    
+    for (uint16_t i = start_block; i <= end_block; i++) {
         set_bit(i, 0);
-        i++;
     }
+    
+    block_info* current = (block_info*)memory;
+    while (current != NULL) {
+        if (current->is_free && current->next != NULL && current->next->is_free) {
+            uint16_t current_addr = (uint16_t)((uint8_t*)current - memory);
+            uint16_t buddy_addr = current_addr + current->size + sizeof(block_info);
+            
+            block_info* buddy = (block_info*)(memory + buddy_addr);
+            
+            if ((uint8_t*)buddy == (uint8_t*)current->next && buddy->is_free) {
+                current->size += buddy->size + sizeof(block_info);
+                current->next = buddy->next;
+                
+                memset(buddy, 0, sizeof(block_info));
+            }
+        }
+        current = current->next;
+    }
+    
+    printf("Блок по адресу %u освобожден (процесс %u)\n", address, process_id);
 }
 
-void RAMModel::get_memory_info() {
-    std::vector<std::pair<int, int>> free_blocks;
-    std::vector<std::pair<int, int>> allocated_blocks;
+void get_memory_info() {
+    printf("Buddy system allocation lists:\n");
+    block_info* current = (block_info*)memory;
+    uint16_t total_used = 0;
+    uint16_t total_free = 0;
+    uint16_t used_blocks = 0;
+    uint16_t free_blocks = 0;
     
-    int i = 0;
-    while (i < MEMORY_SIZE / BLOCK_SIZE) {
-        if (get_bit(i) == 0) {
-            int start = i * BLOCK_SIZE;
-            int size = 0;
-            while (i < MEMORY_SIZE / BLOCK_SIZE && get_bit(i) == 0) {
-                size += BLOCK_SIZE;
-                i++;
-            }
-            free_blocks.push_back({start, size});
+    while (current != NULL) {
+        uint16_t addr = (uint16_t)((uint8_t*)current - memory);
+        if (current->is_free) {
+            printf("Free block address=%u size=%u\n", 
+                   addr + sizeof(block_info), current->size);
+            total_free += current->size;
+            free_blocks++;
         } else {
-            int start = i * BLOCK_SIZE;
-            int size = 0;
-            while (i < MEMORY_SIZE / BLOCK_SIZE && get_bit(i) == 1) {
-                size += BLOCK_SIZE;
-                i++;
-            }
-            allocated_blocks.push_back({start, size});
+            printf("Free block address=%u size=%u\n", 
+                   addr + sizeof(block_info), current->size, current->process_id);
+            total_used += current->size;
+            used_blocks++;
         }
+        current = current->next;
     }
     
-    int total_free = 0;
-    int total_allocated = 0;
-    
-    std::cout << "Free blocks: " << free_blocks.size() << std::endl;
-    for (const auto& block : free_blocks) {
-        std::cout << "Start: " << block.first << ", Size: " << block.second << std::endl;
-        total_free += block.second;
-    }
-    
-    std::cout << "Allocated blocks: " << allocated_blocks.size() << std::endl;
-    for (const auto& block : allocated_blocks) {
-        std::cout << "Start: " << block.first << ", Size: " << block.second << std::endl;
-        total_allocated += block.second;
-    }
-    
-    std::cout << "Buddy system allocation lists:" << std::endl;
-    for (const auto& [size, blocks] : buddy_allocated_blocks) {
-        std::cout << "Size " << size << " blocks: ";
-        for (const auto& block : blocks) {
-            std::cout << "[" << block.first << ", " << block.second << "] ";
-        }
-        std::cout << std::endl;
-    }
-    
-    std::cout << "Total free memory: " << total_free << std::endl;
-    std::cout << "Total allocated memory: " << total_allocated << std::endl;
+    printf("Total free memory: %u\n", total_free);
+    printf("Total allocated memory: %u\n", total_used);
 }
 RAMModel::RAMModel() {
-    std::memset(memory, 0, MEMORY_SIZE);
-    std::memset(bitmap, 0, BITMAP_SIZE);
+    initialize_memory();
 }
-
 size_t RAMModel::allocate(size_t bytes) {
-    return allocate_block(bytes);
+    static int id = 0;
+    return allocate_binary_buddy(bytes, id++);
 }
 void RAMModel::free(size_t address) {
-    free_block(address);
+    free_binary_buddy(address);
 }
 void RAMModel::print_diagnostics() {
-    get_memory_info();
+    get_memory_info(); 
 }

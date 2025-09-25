@@ -23,6 +23,12 @@ public:
     void print_diagnostics();
 
 private:
+    void set_bit(int position, int value);
+    int get_bit(int position);
+    int allocate_block(int size);
+    void free_block(int address);
+    void get_memory_info();
+
     unsigned char memory[MEMORY_SIZE];
     unsigned char bitmap[BITMAP_SIZE];
 };
