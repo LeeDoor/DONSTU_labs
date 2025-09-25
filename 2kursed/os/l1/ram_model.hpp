@@ -11,13 +11,9 @@ public:
         uint8_t taken;
         uint8_t next;
     };
-    static constexpr unsigned POWER2_OF_RAM = 16;
-    static constexpr unsigned RAM_SIZE = 1 << POWER2_OF_RAM;
-    static constexpr unsigned CHUNK_SIZE = 64;
-    static constexpr unsigned CHUNK_ARRAY = (RAM_SIZE / CHUNK_SIZE + 7) / 8;
-    static constexpr unsigned LISTS_AMOUNT = (POWER2_OF_RAM << 1) - 1;
-    static constexpr unsigned LISTS_ARRAY = LISTS_AMOUNT * sizeof(DataBlock);
-    static constexpr unsigned ARRAY_SIZE = LISTS_ARRAY + RAM_SIZE + CHUNK_ARRAY;
+    static constexpr unsigned MEMORY_SIZE = 1024;
+    static constexpr unsigned BLOCK_SIZE = 8;
+    static constexpr unsigned BITMAP_SIZE = ((MEMORY_SIZE / BLOCK_SIZE + 7) / 8);
 
     RAMModel();
 
@@ -27,11 +23,12 @@ public:
     void print_diagnostics();
 
 private:
-    static unsigned closest_pw2(unsigned n);
-    DataBlock* get_data_block_at(unsigned ith);
-    void print_bitmap_diagnostics();
-    void print_lists_diagnostics();
-    DataBlock* get_last_free_block(unsigned block_id);
+    void set_bit(int position, int value);
+    int get_bit(int position);
+    int allocate_block(int size);
+    void free_block(int address);
+    void get_memory_info();
 
-    std::array<char, ARRAY_SIZE> data_;
+    unsigned char memory[MEMORY_SIZE];
+    unsigned char bitmap[BITMAP_SIZE];
 };
