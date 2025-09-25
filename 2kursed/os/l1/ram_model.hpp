@@ -29,9 +29,11 @@ public:
 private:
     static unsigned closest_pw2(unsigned n);
     DataBlock* get_data_block_at(unsigned ith);
+    void remove_from_list(unsigned ith);
     void print_bitmap_diagnostics();
     void print_lists_diagnostics();
     DataBlock* get_last_free_block(unsigned block_id);
+    void add_to_list(unsigned block_list_id, DataBlock block);
 
-    std::array<char, ARRAY_SIZE> data_;
+    char data_[ARRAY_SIZE];
 };
