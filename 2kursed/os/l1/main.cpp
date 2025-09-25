@@ -5,10 +5,9 @@
 void print_header() {
     std::cout 
         << "====================" << std::endl
-        << "RAM SIZE: "   << RAMModel::RAM_SIZE   << std::endl
-        << "CHUNK SIZE: " << RAMModel::CHUNK_ARRAY << std::endl
-        << "LISTS SIZE: " << RAMModel::LISTS_ARRAY << std::endl
-        << "ARRAY SIZE: " << RAMModel::ARRAY_SIZE << std::endl
+        << "MEMORY SIZE: "   << RAMModel::MEMORY_SIZE   << std::endl
+        << "BLOCK SIZE: " << RAMModel::BLOCK_SIZE << std::endl
+        << "BITMAP SIZE: " << RAMModel::BITMAP_SIZE << std::endl
         << "====================" << std::endl
     ;
 }
@@ -29,8 +28,8 @@ bool apply_menu() {
     int choice = get_valid_input(0, 3);
     switch(choice) {
         case 1: {
-            std::cout << "Enter the size of allocating chunk [1; " << RAMModel::RAM_SIZE << "]> ";
-            int bytes = get_valid_input(1, static_cast<int>(RAMModel::RAM_SIZE));
+            std::cout << "Enter the size of allocating chunk [1; " << RAMModel::MEMORY_SIZE << "]> ";
+            int bytes = get_valid_input(1, static_cast<int>(RAMModel::MEMORY_SIZE));
             try {
                 size_t address = ram.allocate(bytes);
                 std::cout << "Allocated " << bytes << " bytes at " << address << std::endl;
@@ -40,8 +39,8 @@ bool apply_menu() {
             break;
         }
         case 2: {
-            std::cout << "Enter the address of a chunk to free [0; " << RAMModel::RAM_SIZE << "]> ";
-            int address = get_valid_input(1, static_cast<int>(RAMModel::RAM_SIZE));
+            std::cout << "Enter the address of a chunk to free [0; " << RAMModel::MEMORY_SIZE << "]> ";
+            int address = get_valid_input(0, static_cast<int>(RAMModel::MEMORY_SIZE));
             ram.free(address);
             std::cout << "Freed at " << address << std::endl;
             break;

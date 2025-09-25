@@ -1,122 +1,170 @@
 #include "ram_model.hpp"
 #include <cstring>
 #include <iostream>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
 
-unsigned RAMModel::closest_pw2(unsigned n) {
-    if (n == 0) return 1;
-    if (n == 1) return 1;
+#define MEMORY_SIZE 1024
+#define BLOCK_SIZE 8
+#define BITMAP_SIZE ((MEMORY_SIZE / BLOCK_SIZE + 7) / 8)
 
-    unsigned int power = 1;
-    while ((1 << power) < n) {
-        ++power;
+unsigned char memory[MEMORY_SIZE];
+unsigned char bitmap[BITMAP_SIZE];
+std::map<int, std::vector<std::pair<int, int>>> buddy_allocated_blocks;
+
+void RAMModel::set_bit(int position, int value) {
+    int byte_index = position / 8;
+    int bit_index = position % 8;
+    
+    if (value) {
+        bitmap[byte_index] |= (1 << bit_index);
+    } else {
+        bitmap[byte_index] &= ~(1 << bit_index);
     }
-    return power;
 }
 
+int RAMModel::get_bit(int position) {
+    int byte_index = position / 8;
+    int bit_index = position % 8;
+    return (bitmap[byte_index] >> bit_index) & 1;
+}
+
+int RAMModel::allocate_block(int size) {
+    int blocks_needed = (size + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    int consecutive_free = 0;
+    int start_block = -1;
+    
+    for (int i = 0; i < MEMORY_SIZE / BLOCK_SIZE; i++) {
+        if (get_bit(i) == 0) {
+            if (consecutive_free == 0) {
+                start_block = i;
+            }
+            consecutive_free++;
+            
+            if (consecutive_free >= blocks_needed) {
+                for (int j = start_block; j < start_block + blocks_needed; j++) {
+                    set_bit(j, 1);
+                }
+                
+                int actual_size = blocks_needed * BLOCK_SIZE;
+                int buddy_size = 1;
+                while (buddy_size * 2 <= actual_size) {
+                    buddy_size *= 2;
+                }
+                
+                buddy_allocated_blocks[buddy_size].push_back({start_block * BLOCK_SIZE, actual_size});
+                return start_block * BLOCK_SIZE;
+            }
+        } else {
+            consecutive_free = 0;
+            start_block = -1;
+        }
+    }
+    
+    return -1;
+}
+
+void RAMModel::free_block(int address) {
+    int start_block = address / BLOCK_SIZE;
+    
+    if (address < 0 || address >= MEMORY_SIZE || address % BLOCK_SIZE != 0) {
+        std::cout << "Error: Invalid address" << std::endl;
+        return;
+    }
+    
+    if (get_bit(start_block) == 0) {
+        std::cout << "Error: Block is already free" << std::endl;
+        return;
+    }
+    
+    for (auto& [size, blocks] : buddy_allocated_blocks) {
+        for (auto it = blocks.begin(); it != blocks.end(); ++it) {
+            if (it->first == address) {
+                blocks.erase(it);
+                if (blocks.empty()) {
+                    buddy_allocated_blocks.erase(size);
+                }
+                break;
+            }
+        }
+    }
+    
+    int i = start_block;
+    while (i < MEMORY_SIZE / BLOCK_SIZE && get_bit(i) == 1) {
+        set_bit(i, 0);
+        i++;
+    }
+}
+
+void RAMModel::get_memory_info() {
+    std::vector<std::pair<int, int>> free_blocks;
+    std::vector<std::pair<int, int>> allocated_blocks;
+    
+    int i = 0;
+    while (i < MEMORY_SIZE / BLOCK_SIZE) {
+        if (get_bit(i) == 0) {
+            int start = i * BLOCK_SIZE;
+            int size = 0;
+            while (i < MEMORY_SIZE / BLOCK_SIZE && get_bit(i) == 0) {
+                size += BLOCK_SIZE;
+                i++;
+            }
+            free_blocks.push_back({start, size});
+        } else {
+            int start = i * BLOCK_SIZE;
+            int size = 0;
+            while (i < MEMORY_SIZE / BLOCK_SIZE && get_bit(i) == 1) {
+                size += BLOCK_SIZE;
+                i++;
+            }
+            allocated_blocks.push_back({start, size});
+        }
+    }
+    
+    int total_free = 0;
+    int total_allocated = 0;
+    
+    std::cout << "Free blocks: " << free_blocks.size() << std::endl;
+    for (const auto& block : free_blocks) {
+        std::cout << "Start: " << block.first << ", Size: " << block.second << std::endl;
+        total_free += block.second;
+    }
+    
+    std::cout << "Allocated blocks: " << allocated_blocks.size() << std::endl;
+    for (const auto& block : allocated_blocks) {
+        std::cout << "Start: " << block.first << ", Size: " << block.second << std::endl;
+        total_allocated += block.second;
+    }
+    
+    std::cout << "Buddy system allocation lists:" << std::endl;
+    for (const auto& [size, blocks] : buddy_allocated_blocks) {
+        std::cout << "Size " << size << " blocks: ";
+        for (const auto& block : blocks) {
+            std::cout << "[" << block.first << ", " << block.second << "] ";
+        }
+        std::cout << std::endl;
+    }
+    
+    std::cout << "Total free memory: " << total_free << std::endl;
+    std::cout << "Total allocated memory: " << total_allocated << std::endl;
+}
 RAMModel::RAMModel() {
-    std::memset(data_, 0, ARRAY_SIZE);
-    add_to_list(1, {1, 1, sizeof(DataBlock)});
-    add_to_list(2, {2, 1, 4  * sizeof(DataBlock)});
-    add_to_list(2, {3, 1, 4 * sizeof(DataBlock)});
+    std::memset(memory, 0, MEMORY_SIZE);
+    std::memset(bitmap, 0, BITMAP_SIZE);
 }
 
-void RAMModel::add_to_list(unsigned block_list_id, DataBlock block) {
-    DataBlock* cur = get_last_free_block(block_list_id);
-    if(cur->taken) {
-        cur += sizeof(DataBlock);
-        *cur = block;
-    } else {
-        *cur = block;
-    }
-}
-void RAMModel::remove_from_list(unsigned ith) {
-    if(ith == 0) {
-        DataBlock* second = get_data_block_at(1);
-        
-    } else {
-        DataBlock* toremove = get_data_block_at(ith - 1);
-        DataBlock* remove   = 
-        toremove->next += sizeof(DataBlock);
-        toremove += sizeof(DataBlock);
-        toremove->taken = 0;
-    }
-}
-
-/*! throws std::bad_alloc */
 size_t RAMModel::allocate(size_t bytes) {
-    unsigned chunk_pw2 = closest_pw2(bytes);
-    while((1 << chunk_pw2) < CHUNK_SIZE) 
-        ++chunk_pw2;
-    if(chunk_pw2 > POWER2_OF_RAM) throw std::bad_alloc();
-    unsigned block_list_id = (1 << (POWER2_OF_RAM - chunk_pw2)) - 1;
-    DataBlock* closest;
-    do closest = get_last_free_block(block_list_id++);
-    while(!closest->taken);
-    int difference = (1 << chunk_pw2) - bytes;
-    unsigned chunks_to_cut = 0;
-    while(difference >= 64) {
-        ++chunks_to_cut;
-        difference -= 64;
-    }
-
-    return closest->address;
+    return allocate_block(bytes);
 }
-
-RAMModel::DataBlock* RAMModel::get_last_free_block(unsigned block_id) {
-    DataBlock* block = get_data_block_at(block_id);
-    while(block->taken) {
-        auto next = get_data_block_at(block->next);
-        if(block == next) return block;
-        block = next;
-    }
-    return block;
-}
-
 void RAMModel::free(size_t address) {
-    std::cout << "Freeing " << address << "\n";
+    free_block(address);
 }
-RAMModel::DataBlock* RAMModel::get_data_block_at(unsigned ith) {
-    if(ith > (1 << (POWER2_OF_RAM - 6 + 1)) - 1) throw std::bad_alloc();
-    char* aBOBA = data_ + sizeof(DataBlock) * ith;
-    DataBlock* bBOBA = (DataBlock*) aBOBA;
-    return bBOBA;
-}
-
 void RAMModel::print_diagnostics() {
-    print_bitmap_diagnostics();
-    print_lists_diagnostics();
+    get_memory_info();
 }
-void RAMModel::print_bitmap_diagnostics() {
-    constexpr auto start = LISTS_ARRAY + RAM_SIZE;
-    constexpr auto end = start + CHUNK_ARRAY;
-
-    std::cout << "Bitmap statistics:" << std::endl;
-    for(size_t i = start; i < end; ++i) {
-        char chunk = data_[i];
-        for(size_t b = 0; b < 8; ++b) {
-            bool taken = chunk & (1 << b);
-            std::cout << static_cast<int>(taken);
-        }
-        std::cout << " ";
-    }
-    std::cout << std::endl;
-}
-
-void RAMModel::print_lists_diagnostics() {
-    constexpr auto start = 0;
-    constexpr auto end = start + LISTS_ARRAY;
-
-    unsigned step = 0;
-    for(unsigned cur_block_size = POWER2_OF_RAM; (1 << cur_block_size) >= CHUNK_SIZE; --cur_block_size) {
-        if(step > POWER2_OF_RAM - 8) break;
-        DataBlock* cur = get_data_block_at(step);
-        while(cur->next != cur->address) {
-            std::cout << (1 << cur_block_size) << "B At: " << cur->address << std::endl;
-            auto next = get_data_block_at(cur->next);
-            if(cur == next) break;
-            cur = next;
-        }
-        step = step * 2 + 1;
-    }
-}
-
