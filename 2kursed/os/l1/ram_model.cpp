@@ -63,8 +63,7 @@ void initialize_memory() {
 
 uint16_t allocate_binary_buddy(uint16_t size, uint16_t process_id) {
     if (size == 0 || size > MEMORY_SIZE - sizeof(block_info)) {
-        printf("Ошибка: недопустимый размер %u\n", size);
-        return 0;
+        throw std::bad_alloc();
     }
     
     uint16_t required_size = size + sizeof(block_info);
@@ -110,22 +109,19 @@ uint16_t allocate_binary_buddy(uint16_t size, uint16_t process_id) {
         current = current->next;
     }
     
-    printf("Ошибка: недостаточно памяти для выделения %u байт\n", size);
-    return 0;
+    throw std::bad_alloc();
 }
 
 void free_binary_buddy(uint16_t address) {
     if (address < sizeof(block_info) || address >= MEMORY_SIZE) {
-        printf("Ошибка: недопустимый адрес %u\n", address);
-        return;
+        throw std::bad_alloc();
     }
     
     uint16_t header_addr = address - sizeof(block_info);
     block_info* block = get_block_header(header_addr);
     
     if (block->is_free) {
-        printf("Ошибка: блок по адресу %u уже свободен\n", address);
-        return;
+        throw std::bad_alloc();
     }
     
     block->is_free = 1;
@@ -156,8 +152,6 @@ void free_binary_buddy(uint16_t address) {
         }
         current = current->next;
     }
-    
-    printf("Блок по адресу %u освобожден (процесс %u)\n", address, process_id);
 }
 
 void get_memory_info() {
