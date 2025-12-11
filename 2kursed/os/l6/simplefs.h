@@ -66,8 +66,8 @@ private:
     std::map<uint32_t, std::vector<DirEntry>> directory_cache;
     uint32_t allocate_inode();
     void free_inode(uint32_t inode);
-    std::vector<uint32_t> read_block_chain(uint32_t first_block);
-    void write_block_chain(uint32_t first_block, const std::vector<uint32_t>& blocks);
+    std::vector<uint32_t> read_block_chain(uint32_t first_block, uint32_t block_size);
+    void write_block_chain(uint32_t first_block, uint32_t block_size, const std::vector<uint32_t>& blocks);
     uint32_t allocate_block_chain(uint32_t size);
     void free_block_chain(uint32_t first_block);
     std::string normalize_path(const std::string& path);

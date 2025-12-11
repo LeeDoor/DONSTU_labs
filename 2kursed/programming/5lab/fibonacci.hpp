@@ -1,10 +1,7 @@
 #pragma once
-
 #include <iostream>
 #include <vector>
-#include <string>
 
-// 1. Шаблон функции для генерации n чисел Фибоначчи
 template <typename T>
 std::vector<T> generateFibonacci(int n) {
     std::vector<T> result;
@@ -21,7 +18,6 @@ std::vector<T> generateFibonacci(int n) {
     return result;
 }
 
-// 3. Специализация функции для работы с short
 template <>
 std::vector<short> generateFibonacci<short>(int n) {
     std::vector<short> result;
@@ -32,7 +28,7 @@ std::vector<short> generateFibonacci<short>(int n) {
     
     for (int i = 2; i < n; i++) {
         short next = result[i-1] + result[i-2];
-        if (next < result[i-1]) { // Проверка на переполнение
+        if (next < result[i-1]) { 
             std::cout << "Warning: overflow detected for short at position " << i << std::endl;
             break;
         }
@@ -42,7 +38,6 @@ std::vector<short> generateFibonacci<short>(int n) {
     return result;
 }
 
-// 2. Шаблонный класс, который хранит последовательность Фибоначчи
 template <typename T>
 class FibonacciSequence {
 private:
@@ -70,7 +65,6 @@ public:
     }
 };
 
-// 4. Специализация класса для работы с типом int
 template <>
 class FibonacciSequence<int> {
 private:

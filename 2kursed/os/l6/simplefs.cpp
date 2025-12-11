@@ -1,4 +1,4 @@
-#include "filesystem.h"
+#include "simplefs.h"
 
 uint32_t FileSystem::allocate_inode() {
     uint32_t inode = next_inode++;
@@ -8,7 +8,7 @@ uint32_t FileSystem::allocate_inode() {
 void FileSystem::free_inode(uint32_t inode) {
     inode_table.erase(inode);
 }
-std::vector<uint32_t> FileSystem::read_block_chain(uint32_t first_block) {
+std::vector<uint32_t> FileSystem::read_block_chain(uint32_t first_block, uint32_t block_size) {
     std::vector<uint32_t> chain;
     uint32_t current = first_block;
     while (current != 0) {
@@ -21,7 +21,7 @@ std::vector<uint32_t> FileSystem::read_block_chain(uint32_t first_block) {
     }
     return chain;
 }
-void FileSystem::write_block_chain(uint32_t first_block, const std::vector<uint32_t>& blocks) {
+void FileSystem::write_block_chain(uint32_t first_block, uint32_t block_size, const std::vector<uint32_t>& blocks) {
     for (size_t i = 0; i < blocks.size(); i++) {
         uint32_t next_block = (i + 1 < blocks.size()) ? blocks[i + 1] : 0;
         std::vector<uint8_t> block_data(block_size, 0);
@@ -181,6 +181,14 @@ bool FileSystem::mount(const std::string& fsfile) {
     load_directory(root_inode);
     return true;
 }
+
+class User {
+private:
+    int privilege;
+public:
+    int get_privelege() const { return privilege; }
+}
+
 int FileSystem::open(const std::string& filename) {
     auto [dir_inode, name] = resolve_path(filename);
     if (dir_inode == 0 || name.empty()) return -1;
@@ -193,6 +201,7 @@ int FileSystem::open(const std::string& filename) {
     uint32_t inode = allocate_inode();
     uint32_t first_block = allocate_block_chain(1);
     inode_table[inode] = DirEntry(name, first_block, 0, false);
+    if(directory_privilege > user.get_Privelege()) return -1;
     directory_cache[dir_inode].push_back(DirEntry(name, first_block, 0, false));
     save_directory(dir_inode);
     return first_block;
@@ -202,6 +211,8 @@ void FileSystem::close(int fd) {
 bool FileSystem::seek(int fd, uint32_t offset) {
     return true;
 }
+
+
 uint32_t FileSystem::read(int fd, std::vector<uint8_t>& buffer, uint32_t size) {
     std::vector<uint32_t> blocks = read_block_chain(fd);
     if (blocks.empty()) return 0;

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Currency.hpp"
 
 class Dollar : public Currency {
