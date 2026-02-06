@@ -15,7 +15,7 @@ int main() {
         }
     }
     for(int i = 0; i < 26; ++i) {
-        if(letters[i])
+        if(letters[i] >= 2)
             cout << "'" << static_cast<char>('a' + i) << "': " << letters[i] << " matches.\n";
     }
     return 0;
