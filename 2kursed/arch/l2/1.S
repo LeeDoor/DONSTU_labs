@@ -5,4 +5,4 @@ section .text
     global _start
 
 _start:
-    mov al, [data1]     ; Load first byte (123) into al
+    mov al, [data1]     
