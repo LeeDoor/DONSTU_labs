@@ -1,3 +1,0 @@
-/home/leedoor/Documents/DONSTU_labs/2kursed/algs/l3/build/CMakeFiles/lab_memory_manager.dir
-/home/leedoor/Documents/DONSTU_labs/2kursed/algs/l3/build/CMakeFiles/edit_cache.dir
-/home/leedoor/Documents/DONSTU_labs/2kursed/algs/l3/build/CMakeFiles/rebuild_cache.dir

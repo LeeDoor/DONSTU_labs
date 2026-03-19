@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/lab_memory_manager.dir/link.d CMakeFiles/lab_memory_manager.dir/main.cpp.o CMakeFiles/lab_memory_manager.dir/memory_manager.cpp.o -o lab_memory_manager
