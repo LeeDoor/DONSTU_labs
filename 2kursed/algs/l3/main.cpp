@@ -43,7 +43,11 @@ int main() {
 
         std::cout << "Integer array:\n";
         print_array(int_ptr);
-        std::cout << "Sum between first two positive: " << sum_between_first_two_positive(int_ptr) << '\n';
+        try {
+            std::cout << "Sum between first two positive: " << sum_between_first_two_positive(int_ptr) << '\n';
+        } catch (const std::exception& e) {
+            std::cout << e.what() << '\n';
+        }
 
         std::cout << "Double array:\n";
         print_array(double_ptr);
