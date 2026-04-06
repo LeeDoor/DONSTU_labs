@@ -8,8 +8,6 @@ prompt_len   equ $ - prompt
 msg         db 'Comma count: '
 msg_len      equ $ - msg
 
-nl          db 10
-
 section .bss
 buf         resb 256
 outbuf      resb 32
@@ -28,11 +26,11 @@ _start:
     mov edi, 0
     lea rsi, [buf]
     mov edx, 256
-    syscall
+    syscall ; --> rax
 
-    mov r8, rax
-    xor r9d, r9d
-    xor rcx, rcx
+    mov r8, rax  ; bytes read
+    xor r9d, r9d ; colons
+    xor rcx, rcx ; i
     lea rsi, [buf]
 
 count_loop:
@@ -51,12 +49,12 @@ done_count:
     mov edi, 1
     lea rsi, [msg]
     mov edx, msg_len
-    syscall
+    syscall ; COmma count: 
 
     mov eax, r9d
-    lea rdi, [outbuf + 31]
-    mov byte [rdi], 10
-    dec rdi
+    lea rdi, [outbuf + 31]; to last write
+    mov byte [rdi], 10    ; \n
+    dec rdi		  ; to pre-last write number
     cmp eax, 0
     jne convert
     mov byte [rdi], '0'
@@ -88,4 +86,4 @@ print_num:
     xor edi, edi
     syscall
 
-    #https://chatgpt.com/c/69d093c6-68ac-8385-b2d8-80e1826cecc9
+    ;https://chatgpt.com/c/69d093c6-68ac-8385-b2d8-80e1826cecc9
