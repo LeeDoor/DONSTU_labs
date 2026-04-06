@@ -1,5 +1,4 @@
 #pragma once
-
 #include <algorithm>
 #include <concepts>
 #include <cstddef>
@@ -45,6 +44,9 @@ concept sorting_iterator = requires(
     { it - offset } -> std::same_as<Iterator>;
     { it - other } -> std::same_as<typename std::iterator_traits<Iterator>::difference_type>;
 
+    { std::prev(it) } -> std::same_as<Iterator>;
+    { std::next(it) } -> std::same_as<Iterator>;
+
     { std::iter_swap(it, other) } -> std::same_as<void>;
 };
 
@@ -60,7 +62,6 @@ public:
         auto counted_compare = make_counted_compare(stats, compare);
 
         for (Iterator current = std::next(first); current != last; ++current) {
-            ++stats.iterations;
             Iterator position = current;
 
             while (position != first) {
@@ -83,7 +84,6 @@ public:
         auto counted_compare = make_counted_compare(stats, compare);
 
         for (Iterator current = first; current != last; ++current) {
-            ++stats.iterations;
             Iterator minimum = current;
 
             for (Iterator probe = std::next(current); probe != last; ++probe) {
@@ -113,7 +113,6 @@ public:
         Iterator unsorted_end = last;
 
         while (swapped) {
-            ++stats.iterations;
             swapped = false;
             Iterator current = first;
             Iterator next_it = std::next(first);

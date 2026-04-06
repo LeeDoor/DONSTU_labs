@@ -46,6 +46,11 @@ std::vector<int> get_array_from_user() {
     while (stream >> value) {
         values.push_back(value);
     }
+    
+    if(!stream.eof()) {
+	std::cout << "Error while forming an array" << std::endl;
+	return {};
+    }
 
     return values;
 }
@@ -63,18 +68,19 @@ void print_array(const std::vector<T>& values) {
 
 int main() {
     std::vector<int> values = get_array_from_user();
+    if(!values.empty()) {
+	std::cout << "array before sorting divisible by 3 elements\n";
+	print_array(values);
 
-    std::cout << "array before sorting divisible by 3 elements\n";
-    print_array(values);
+	const sort_stats special_stats = Sortings::direct_selection_sort_divisible_by_3(values.begin(), values.end());
 
-    const sort_stats special_stats = Sortings::direct_selection_sort_divisible_by_3(values.begin(), values.end());
+	std::cout << "array after sorting divisible by 3 elements\n";
+	print_array(values);
+	std::cout << "iterations: " << special_stats.iterations
+		  << ", comparisons: " << special_stats.comparisons
+		  << ", swaps: " << special_stats.swaps << "\n\n";
 
-    std::cout << "array after sorting divisible by 3 elements\n";
-    print_array(values);
-    std::cout << "iterations: " << special_stats.iterations
-              << ", comparisons: " << special_stats.comparisons
-              << ", swaps: " << special_stats.swaps << "\n\n";
-
+    }
     std::cout << "statistics by size\n\n";
     SortingsBenchmarkPrinter::print_statistics_by_size<Benchmark>(std::cout);
 

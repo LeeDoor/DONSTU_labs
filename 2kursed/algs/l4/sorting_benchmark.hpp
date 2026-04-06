@@ -17,14 +17,14 @@ public:
     template <typename Benchmark, typename T = int, typename Compare = std::less<>>
     static void print_statistics_by_size(std::ostream& out, Compare compare = Compare()) {
         std::mt19937 generator(std::random_device{}());
+	auto arrays = build_array_sizes_cases<T>(generator);
 
         for (const auto& sorting : sorting_entries<T, Compare>()) {
             out << sorting.name << '\n';
             print_table_header(out, "size");
 
-            for (std::size_t size : benchmark_sizes()) {
-                auto source = make_random_array<T>(size, generator);
-                print_row_for_source<Benchmark>(out, size, source, sorting.function, compare);
+            for (auto array : arrays) {
+		print_row_for_source<Benchmark>(out, array.name, array.values, sorting.function, compare);
             }
 
             out << '\n';
@@ -60,7 +60,7 @@ private:
 
     template <typename T>
     struct array_case {
-        std::string_view name;
+        std::string name;
         std::vector<T> values;
     };
 
@@ -74,8 +74,8 @@ private:
         return {{
             {"direct_insertion_sort", &Sortings::direct_insertion_sort<iterator, Compare>},
             {"direct_selection_sort", &Sortings::direct_selection_sort<iterator, Compare>},
-            {"direct_exchange_sort", &Sortings::direct_exchange_sort<iterator, Compare>},
-            {"hoare_sort", &Sortings::hoare_sort<iterator, Compare>}
+            {"direct_exchange_sort",  &Sortings::direct_exchange_sort<iterator, Compare>},
+            {"hoare_sort",	      &Sortings::hoare_sort<iterator, Compare>}
         }};
     }
 
@@ -90,6 +90,16 @@ private:
         cases.push_back({"sorted 50%", make_partially_sorted_array<T>(size, generator, .50)});
         cases.push_back({"sorted 75%", make_partially_sorted_array<T>(size, generator, .75)});
         return cases;
+    }
+
+    template <typename T>
+    static std::vector<array_case<T>> build_array_sizes_cases(std::mt19937& generator) {
+	std::vector<array_case<T>> cases;
+	auto sizes = benchmark_sizes();
+	std::for_each(sizes.begin(), sizes.end(), [&](size_t s) {
+	    cases.push_back({ std::to_string(s), make_random_array<T>(s, generator) });
+	});
+	return cases;
     }
 
     template <typename T>
@@ -153,10 +163,9 @@ private:
         sort_function<T, Compare> sorting_function,
         Compare compare
     ) {
-        std::vector<T> values;
+        std::vector<T> values = source;
         sort_stats stats;
         auto time_value = Benchmark::measure([&]() {
-            values = source;
             stats = sorting_function(values.begin(), values.end(), compare);
         });
         print_table_row(out, row_label, time_value, stats);
