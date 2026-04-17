@@ -113,7 +113,6 @@ public:
         Iterator unsorted_end = last;
 
         while (swapped) {
-            ++stats.iterations;
             swapped = false;
             Iterator current = first;
             Iterator next_it = std::next(first);
