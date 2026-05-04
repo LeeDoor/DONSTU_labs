@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Search algorithms benchmark report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+    color-scheme: light;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+}
+body {
+    margin: 0;
+    padding: 32px;
+}
+main {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+h1 {
+    margin: 0 0 24px;
+    font-size: 30px;
+}
+h2 {
+    margin: 0 0 16px;
+    font-size: 22px;
+}
+section {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+.chart {
+    width: 100%;
+    height: auto;
+    margin: 10px 0 24px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+.axis {
+    stroke: #111827;
+    stroke-width: 1;
+}
+.grid {
+    stroke: #e5e7eb;
+    stroke-width: 1;
+}
+.tick {
+    font-size: 12px;
+    fill: #4b5563;
+}
+.label {
+    font-size: 13px;
+    fill: #374151;
+}
+.legend {
+    font-size: 12px;
+    fill: #111827;
+}
+.chart-title {
+    font-size: 17px;
+    font-weight: 700;
+    fill: #111827;
+}
+.table-wrap {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+th, td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    white-space: nowrap;
+}
+th {
+    background: #f9fafb;
+    font-weight: 700;
+}
+tr:hover td {
+    background: #f9fafb;
+}
+.summary {
+    margin: 0 0 24px;
+    color: #4b5563;
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Search algorithms benchmark report</h1>
+<p class="summary">Generated from searches_benchmark.txt. Time values are normalized to nanoseconds for charts.</p>
+
+<section>
+<h2>linear_search_vs_barrier</h2>
+<svg viewBox="0 0 920 380" class="chart" role="img" aria-label="linear_search_vs_barrier: time">
+<text x="70" y="24" class="chart-title">linear_search_vs_barrier: time</text>
+<line x1="70" y1="40" x2="70" y2="325" class="axis"/>
+<line x1="70" y1="325" x2="890" y2="325" class="axis"/>
+<line x1="65" y1="325.00" x2="890" y2="325.00" class="grid"/>
+<text x="60" y="329.00" text-anchor="end" class="tick">0</text>
+<line x1="65" y1="268.00" x2="890" y2="268.00" class="grid"/>
+<text x="60" y="272.00" text-anchor="end" class="tick">108.00us</text>
+<line x1="65" y1="211.00" x2="890" y2="211.00" class="grid"/>
+<text x="60" y="215.00" text-anchor="end" class="tick">216.00us</text>
+<line x1="65" y1="154.00" x2="890" y2="154.00" class="grid"/>
+<text x="60" y="158.00" text-anchor="end" class="tick">324.00us</text>
+<line x1="65" y1="97.00" x2="890" y2="97.00" class="grid"/>
+<text x="60" y="101.00" text-anchor="end" class="tick">432.00us</text>
+<line x1="65" y1="40.00" x2="890" y2="40.00" class="grid"/>
+<text x="60" y="44.00" text-anchor="end" class="tick">540.00us</text>
+<line x1="70.00" y1="325" x2="70.00" y2="330" class="axis"/>
+<text x="70.00" y="350" text-anchor="middle" class="tick">20</text>
+<line x1="234.00" y1="325" x2="234.00" y2="330" class="axis"/>
+<text x="234.00" y="350" text-anchor="middle" class="tick">500</text>
+<line x1="398.00" y1="325" x2="398.00" y2="330" class="axis"/>
+<text x="398.00" y="350" text-anchor="middle" class="tick">1000</text>
+<line x1="562.00" y1="325" x2="562.00" y2="330" class="axis"/>
+<text x="562.00" y="350" text-anchor="middle" class="tick">3000</text>
+<line x1="726.00" y1="325" x2="726.00" y2="330" class="axis"/>
+<text x="726.00" y="350" text-anchor="middle" class="tick">5000</text>
+<line x1="890.00" y1="325" x2="890.00" y2="330" class="axis"/>
+<text x="890.00" y="350" text-anchor="middle" class="tick">10000</text>
+<text x="480.0" y="368" text-anchor="middle" class="label">Array size</text>
+<text x="18" y="182.5" text-anchor="middle" class="label" transform="rotate(-90 18 182.5)">Time</text>
+<polyline points="70.00,324.67 234.00,318.14 398.00,310.75 562.00,282.78 726.00,260.61 890.00,186.19" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.67" r="4" fill="#2563eb"><title>linear_search / average_present | size 20: 630.00ns</title></circle>
+<circle cx="234.00" cy="318.14" r="4" fill="#2563eb"><title>linear_search / average_present | size 500: 13.00us</title></circle>
+<circle cx="398.00" cy="310.75" r="4" fill="#2563eb"><title>linear_search / average_present | size 1000: 27.00us</title></circle>
+<circle cx="562.00" cy="282.78" r="4" fill="#2563eb"><title>linear_search / average_present | size 3000: 80.00us</title></circle>
+<circle cx="726.00" cy="260.61" r="4" fill="#2563eb"><title>linear_search / average_present | size 5000: 122.00us</title></circle>
+<circle cx="890.00" cy="186.19" r="4" fill="#2563eb"><title>linear_search / average_present | size 10000: 263.00us</title></circle>
+<line x1="610" y1="48" x2="630" y2="48" stroke="#2563eb" stroke-width="3"/>
+<text x="638" y="52" class="legend">linear_search / average_present</text>
+<polyline points="70.00,324.93 234.00,324.93 398.00,324.93 562.00,324.92 726.00,324.93 890.00,324.93" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.93" r="4" fill="#dc2626"><title>linear_search / best_begin | size 20: 138.00ns</title></circle>
+<circle cx="234.00" cy="324.93" r="4" fill="#dc2626"><title>linear_search / best_begin | size 500: 130.00ns</title></circle>
+<circle cx="398.00" cy="324.93" r="4" fill="#dc2626"><title>linear_search / best_begin | size 1000: 137.00ns</title></circle>
+<circle cx="562.00" cy="324.92" r="4" fill="#dc2626"><title>linear_search / best_begin | size 3000: 147.00ns</title></circle>
+<circle cx="726.00" cy="324.93" r="4" fill="#dc2626"><title>linear_search / best_begin | size 5000: 133.00ns</title></circle>
+<circle cx="890.00" cy="324.93" r="4" fill="#dc2626"><title>linear_search / best_begin | size 10000: 131.00ns</title></circle>
+<line x1="610" y1="68" x2="630" y2="68" stroke="#dc2626" stroke-width="3"/>
+<text x="638" y="72" class="legend">linear_search / best_begin</text>
+<polyline points="70.00,324.50 234.00,310.22 398.00,295.44 562.00,235.28 726.00,180.39 890.00,40.00" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.50" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 20: 946.00ns</title></circle>
+<circle cx="234.00" cy="310.22" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 500: 28.00us</title></circle>
+<circle cx="398.00" cy="295.44" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 1000: 56.00us</title></circle>
+<circle cx="562.00" cy="235.28" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 3000: 170.00us</title></circle>
+<circle cx="726.00" cy="180.39" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 5000: 274.00us</title></circle>
+<circle cx="890.00" cy="40.00" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 10000: 540.00us</title></circle>
+<line x1="610" y1="88" x2="630" y2="88" stroke="#16a34a" stroke-width="3"/>
+<text x="638" y="92" class="legend">linear_search / worst_absent</text>
+<polyline points="70.00,324.67 234.00,319.72 398.00,313.39 562.00,290.69 726.00,271.17 890.00,207.31" fill="none" stroke="#9333ea" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.67" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 20: 629.00ns</title></circle>
+<circle cx="234.00" cy="319.72" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 500: 10.00us</title></circle>
+<circle cx="398.00" cy="313.39" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 1000: 22.00us</title></circle>
+<circle cx="562.00" cy="290.69" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 3000: 65.00us</title></circle>
+<circle cx="726.00" cy="271.17" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 5000: 102.00us</title></circle>
+<circle cx="890.00" cy="207.31" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 10000: 223.00us</title></circle>
+<line x1="610" y1="108" x2="630" y2="108" stroke="#9333ea" stroke-width="3"/>
+<text x="638" y="112" class="legend">linear_search_with_barrier / average_present</text>
+<polyline points="70.00,324.89 234.00,324.89 398.00,324.89 562.00,324.89 726.00,324.88 890.00,324.88" fill="none" stroke="#ea580c" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.89" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 20: 211.00ns</title></circle>
+<circle cx="234.00" cy="324.89" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 500: 203.00ns</title></circle>
+<circle cx="398.00" cy="324.89" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 1000: 200.00ns</title></circle>
+<circle cx="562.00" cy="324.89" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 3000: 216.00ns</title></circle>
+<circle cx="726.00" cy="324.88" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 5000: 221.00ns</title></circle>
+<circle cx="890.00" cy="324.88" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 10000: 222.00ns</title></circle>
+<line x1="610" y1="128" x2="630" y2="128" stroke="#ea580c" stroke-width="3"/>
+<text x="638" y="132" class="legend">linear_search_with_barrier / best_begin</text>
+<polyline points="70.00,324.54 234.00,311.28 398.00,299.14 562.00,249.53 726.00,206.25 890.00,83.28" fill="none" stroke="#0891b2" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.54" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 20: 876.00ns</title></circle>
+<circle cx="234.00" cy="311.28" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 500: 26.00us</title></circle>
+<circle cx="398.00" cy="299.14" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 1000: 49.00us</title></circle>
+<circle cx="562.00" cy="249.53" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 3000: 143.00us</title></circle>
+<circle cx="726.00" cy="206.25" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 5000: 225.00us</title></circle>
+<circle cx="890.00" cy="83.28" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 10000: 458.00us</title></circle>
+<line x1="610" y1="148" x2="630" y2="148" stroke="#0891b2" stroke-width="3"/>
+<text x="638" y="152" class="legend">linear_search_with_barrier / worst_absent</text>
+</svg>
+<svg viewBox="0 0 920 380" class="chart" role="img" aria-label="linear_search_vs_barrier: comparisons">
+<text x="70" y="24" class="chart-title">linear_search_vs_barrier: comparisons</text>
+<line x1="70" y1="40" x2="70" y2="325" class="axis"/>
+<line x1="70" y1="325" x2="890" y2="325" class="axis"/>
+<line x1="65" y1="325.00" x2="890" y2="325.00" class="grid"/>
+<text x="60" y="329.00" text-anchor="end" class="tick">0</text>
+<line x1="65" y1="268.00" x2="890" y2="268.00" class="grid"/>
+<text x="60" y="272.00" text-anchor="end" class="tick">2000</text>
+<line x1="65" y1="211.00" x2="890" y2="211.00" class="grid"/>
+<text x="60" y="215.00" text-anchor="end" class="tick">4000</text>
+<line x1="65" y1="154.00" x2="890" y2="154.00" class="grid"/>
+<text x="60" y="158.00" text-anchor="end" class="tick">6000</text>
+<line x1="65" y1="97.00" x2="890" y2="97.00" class="grid"/>
+<text x="60" y="101.00" text-anchor="end" class="tick">8000</text>
+<line x1="65" y1="40.00" x2="890" y2="40.00" class="grid"/>
+<text x="60" y="44.00" text-anchor="end" class="tick">10000</text>
+<line x1="70.00" y1="325" x2="70.00" y2="330" class="axis"/>
+<text x="70.00" y="350" text-anchor="middle" class="tick">20</text>
+<line x1="234.00" y1="325" x2="234.00" y2="330" class="axis"/>
+<text x="234.00" y="350" text-anchor="middle" class="tick">500</text>
+<line x1="398.00" y1="325" x2="398.00" y2="330" class="axis"/>
+<text x="398.00" y="350" text-anchor="middle" class="tick">1000</text>
+<line x1="562.00" y1="325" x2="562.00" y2="330" class="axis"/>
+<text x="562.00" y="350" text-anchor="middle" class="tick">3000</text>
+<line x1="726.00" y1="325" x2="726.00" y2="330" class="axis"/>
+<text x="726.00" y="350" text-anchor="middle" class="tick">5000</text>
+<line x1="890.00" y1="325" x2="890.00" y2="330" class="axis"/>
+<text x="890.00" y="350" text-anchor="middle" class="tick">10000</text>
+<text x="480.0" y="368" text-anchor="middle" class="label">Array size</text>
+<text x="18" y="182.5" text-anchor="middle" class="label" transform="rotate(-90 18 182.5)">Comparisons</text>
+<polyline points="70.00,324.71 234.00,317.83 398.00,310.11 562.00,282.28 726.00,255.99 890.00,179.87" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.71" r="4" fill="#2563eb"><title>linear_search / average_present | size 20: 10.35</title></circle>
+<circle cx="234.00" cy="317.83" r="4" fill="#2563eb"><title>linear_search / average_present | size 500: 251.73</title></circle>
+<circle cx="398.00" cy="310.11" r="4" fill="#2563eb"><title>linear_search / average_present | size 1000: 522.51</title></circle>
+<circle cx="562.00" cy="282.28" r="4" fill="#2563eb"><title>linear_search / average_present | size 3000: 1498.96</title></circle>
+<circle cx="726.00" cy="255.99" r="4" fill="#2563eb"><title>linear_search / average_present | size 5000: 2421.48</title></circle>
+<circle cx="890.00" cy="179.87" r="4" fill="#2563eb"><title>linear_search / average_present | size 10000: 5092.43</title></circle>
+<line x1="610" y1="48" x2="630" y2="48" stroke="#2563eb" stroke-width="3"/>
+<text x="638" y="52" class="legend">linear_search / average_present</text>
+<polyline points="70.00,324.97 234.00,324.97 398.00,324.97 562.00,324.97 726.00,324.97 890.00,324.97" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.97" r="4" fill="#dc2626"><title>linear_search / best_begin | size 20: 1</title></circle>
+<circle cx="234.00" cy="324.97" r="4" fill="#dc2626"><title>linear_search / best_begin | size 500: 1</title></circle>
+<circle cx="398.00" cy="324.97" r="4" fill="#dc2626"><title>linear_search / best_begin | size 1000: 1</title></circle>
+<circle cx="562.00" cy="324.97" r="4" fill="#dc2626"><title>linear_search / best_begin | size 3000: 1</title></circle>
+<circle cx="726.00" cy="324.97" r="4" fill="#dc2626"><title>linear_search / best_begin | size 5000: 1</title></circle>
+<circle cx="890.00" cy="324.97" r="4" fill="#dc2626"><title>linear_search / best_begin | size 10000: 1</title></circle>
+<line x1="610" y1="68" x2="630" y2="68" stroke="#dc2626" stroke-width="3"/>
+<text x="638" y="72" class="legend">linear_search / best_begin</text>
+<polyline points="70.00,324.43 234.00,310.75 398.00,296.50 562.00,239.50 726.00,182.50 890.00,40.00" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.43" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 20: 20</title></circle>
+<circle cx="234.00" cy="310.75" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 500: 500</title></circle>
+<circle cx="398.00" cy="296.50" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 1000: 1000</title></circle>
+<circle cx="562.00" cy="239.50" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 3000: 3000</title></circle>
+<circle cx="726.00" cy="182.50" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 5000: 5000</title></circle>
+<circle cx="890.00" cy="40.00" r="4" fill="#16a34a"><title>linear_search / worst_absent | size 10000: 10000</title></circle>
+<line x1="610" y1="88" x2="630" y2="88" stroke="#16a34a" stroke-width="3"/>
+<text x="638" y="92" class="legend">linear_search / worst_absent</text>
+<polyline points="70.00,324.71 234.00,317.83 398.00,310.11 562.00,282.28 726.00,255.99 890.00,179.87" fill="none" stroke="#9333ea" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.71" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 20: 10.35</title></circle>
+<circle cx="234.00" cy="317.83" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 500: 251.73</title></circle>
+<circle cx="398.00" cy="310.11" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 1000: 522.51</title></circle>
+<circle cx="562.00" cy="282.28" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 3000: 1498.96</title></circle>
+<circle cx="726.00" cy="255.99" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 5000: 2421.48</title></circle>
+<circle cx="890.00" cy="179.87" r="4" fill="#9333ea"><title>linear_search_with_barrier / average_present | size 10000: 5092.43</title></circle>
+<line x1="610" y1="108" x2="630" y2="108" stroke="#9333ea" stroke-width="3"/>
+<text x="638" y="112" class="legend">linear_search_with_barrier / average_present</text>
+<polyline points="70.00,324.97 234.00,324.97 398.00,324.97 562.00,324.97 726.00,324.97 890.00,324.97" fill="none" stroke="#ea580c" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.97" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 20: 1</title></circle>
+<circle cx="234.00" cy="324.97" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 500: 1</title></circle>
+<circle cx="398.00" cy="324.97" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 1000: 1</title></circle>
+<circle cx="562.00" cy="324.97" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 3000: 1</title></circle>
+<circle cx="726.00" cy="324.97" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 5000: 1</title></circle>
+<circle cx="890.00" cy="324.97" r="4" fill="#ea580c"><title>linear_search_with_barrier / best_begin | size 10000: 1</title></circle>
+<line x1="610" y1="128" x2="630" y2="128" stroke="#ea580c" stroke-width="3"/>
+<text x="638" y="132" class="legend">linear_search_with_barrier / best_begin</text>
+<polyline points="70.00,324.43 234.00,310.75 398.00,296.50 562.00,239.50 726.00,182.50 890.00,40.00" fill="none" stroke="#0891b2" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.43" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 20: 20</title></circle>
+<circle cx="234.00" cy="310.75" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 500: 500</title></circle>
+<circle cx="398.00" cy="296.50" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 1000: 1000</title></circle>
+<circle cx="562.00" cy="239.50" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 3000: 3000</title></circle>
+<circle cx="726.00" cy="182.50" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 5000: 5000</title></circle>
+<circle cx="890.00" cy="40.00" r="4" fill="#0891b2"><title>linear_search_with_barrier / worst_absent | size 10000: 10000</title></circle>
+<line x1="610" y1="148" x2="630" y2="148" stroke="#0891b2" stroke-width="3"/>
+<text x="638" y="152" class="legend">linear_search_with_barrier / worst_absent</text>
+</svg>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Size</th><th>Algorithm</th><th>Scenario</th><th>Time</th><th>Time, ns</th><th>Comparisons</th></tr></thead>
+<tbody>
+<tr><td>20</td><td>linear_search</td><td>average_present</td><td>630ns</td><td>630</td><td>10.35</td></tr>
+<tr><td>20</td><td>linear_search</td><td>best_begin</td><td>138ns</td><td>138</td><td>1</td></tr>
+<tr><td>20</td><td>linear_search</td><td>worst_absent</td><td>946ns</td><td>946</td><td>20</td></tr>
+<tr><td>20</td><td>linear_search_with_barrier</td><td>average_present</td><td>629ns</td><td>629</td><td>10.35</td></tr>
+<tr><td>20</td><td>linear_search_with_barrier</td><td>best_begin</td><td>211ns</td><td>211</td><td>1</td></tr>
+<tr><td>20</td><td>linear_search_with_barrier</td><td>worst_absent</td><td>876ns</td><td>876</td><td>20</td></tr>
+<tr><td>500</td><td>linear_search</td><td>average_present</td><td>13us</td><td>13000</td><td>251.73</td></tr>
+<tr><td>500</td><td>linear_search</td><td>best_begin</td><td>130ns</td><td>130</td><td>1</td></tr>
+<tr><td>500</td><td>linear_search</td><td>worst_absent</td><td>28us</td><td>28000</td><td>500</td></tr>
+<tr><td>500</td><td>linear_search_with_barrier</td><td>average_present</td><td>10us</td><td>10000</td><td>251.73</td></tr>
+<tr><td>500</td><td>linear_search_with_barrier</td><td>best_begin</td><td>203ns</td><td>203</td><td>1</td></tr>
+<tr><td>500</td><td>linear_search_with_barrier</td><td>worst_absent</td><td>26us</td><td>26000</td><td>500</td></tr>
+<tr><td>1000</td><td>linear_search</td><td>average_present</td><td>27us</td><td>27000</td><td>522.51</td></tr>
+<tr><td>1000</td><td>linear_search</td><td>best_begin</td><td>137ns</td><td>137</td><td>1</td></tr>
+<tr><td>1000</td><td>linear_search</td><td>worst_absent</td><td>56us</td><td>56000</td><td>1000</td></tr>
+<tr><td>1000</td><td>linear_search_with_barrier</td><td>average_present</td><td>22us</td><td>22000</td><td>522.51</td></tr>
+<tr><td>1000</td><td>linear_search_with_barrier</td><td>best_begin</td><td>200ns</td><td>200</td><td>1</td></tr>
+<tr><td>1000</td><td>linear_search_with_barrier</td><td>worst_absent</td><td>49us</td><td>49000</td><td>1000</td></tr>
+<tr><td>3000</td><td>linear_search</td><td>average_present</td><td>80us</td><td>80000</td><td>1498.96</td></tr>
+<tr><td>3000</td><td>linear_search</td><td>best_begin</td><td>147ns</td><td>147</td><td>1</td></tr>
+<tr><td>3000</td><td>linear_search</td><td>worst_absent</td><td>170us</td><td>170000</td><td>3000</td></tr>
+<tr><td>3000</td><td>linear_search_with_barrier</td><td>average_present</td><td>65us</td><td>65000</td><td>1498.96</td></tr>
+<tr><td>3000</td><td>linear_search_with_barrier</td><td>best_begin</td><td>216ns</td><td>216</td><td>1</td></tr>
+<tr><td>3000</td><td>linear_search_with_barrier</td><td>worst_absent</td><td>143us</td><td>143000</td><td>3000</td></tr>
+<tr><td>5000</td><td>linear_search</td><td>average_present</td><td>122us</td><td>122000</td><td>2421.48</td></tr>
+<tr><td>5000</td><td>linear_search</td><td>best_begin</td><td>133ns</td><td>133</td><td>1</td></tr>
+<tr><td>5000</td><td>linear_search</td><td>worst_absent</td><td>274us</td><td>274000</td><td>5000</td></tr>
+<tr><td>5000</td><td>linear_search_with_barrier</td><td>average_present</td><td>102us</td><td>102000</td><td>2421.48</td></tr>
+<tr><td>5000</td><td>linear_search_with_barrier</td><td>best_begin</td><td>221ns</td><td>221</td><td>1</td></tr>
+<tr><td>5000</td><td>linear_search_with_barrier</td><td>worst_absent</td><td>225us</td><td>225000</td><td>5000</td></tr>
+<tr><td>10000</td><td>linear_search</td><td>average_present</td><td>263us</td><td>263000</td><td>5092.43</td></tr>
+<tr><td>10000</td><td>linear_search</td><td>best_begin</td><td>131ns</td><td>131</td><td>1</td></tr>
+<tr><td>10000</td><td>linear_search</td><td>worst_absent</td><td>540us</td><td>540000</td><td>10000</td></tr>
+<tr><td>10000</td><td>linear_search_with_barrier</td><td>average_present</td><td>223us</td><td>223000</td><td>5092.43</td></tr>
+<tr><td>10000</td><td>linear_search_with_barrier</td><td>best_begin</td><td>222ns</td><td>222</td><td>1</td></tr>
+<tr><td>10000</td><td>linear_search_with_barrier</td><td>worst_absent</td><td>458us</td><td>458000</td><td>10000</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section>
+<h2>linear_search_vs_binary_search_on_sorted_arrays</h2>
+<svg viewBox="0 0 920 380" class="chart" role="img" aria-label="linear_search_vs_binary_search_on_sorted_arrays: time">
+<text x="70" y="24" class="chart-title">linear_search_vs_binary_search_on_sorted_arrays: time</text>
+<line x1="70" y1="40" x2="70" y2="325" class="axis"/>
+<line x1="70" y1="325" x2="890" y2="325" class="axis"/>
+<line x1="65" y1="325.00" x2="890" y2="325.00" class="grid"/>
+<text x="60" y="329.00" text-anchor="end" class="tick">0</text>
+<line x1="65" y1="268.00" x2="890" y2="268.00" class="grid"/>
+<text x="60" y="272.00" text-anchor="end" class="tick">111.40us</text>
+<line x1="65" y1="211.00" x2="890" y2="211.00" class="grid"/>
+<text x="60" y="215.00" text-anchor="end" class="tick">222.80us</text>
+<line x1="65" y1="154.00" x2="890" y2="154.00" class="grid"/>
+<text x="60" y="158.00" text-anchor="end" class="tick">334.20us</text>
+<line x1="65" y1="97.00" x2="890" y2="97.00" class="grid"/>
+<text x="60" y="101.00" text-anchor="end" class="tick">445.60us</text>
+<line x1="65" y1="40.00" x2="890" y2="40.00" class="grid"/>
+<text x="60" y="44.00" text-anchor="end" class="tick">557.00us</text>
+<line x1="70.00" y1="325" x2="70.00" y2="330" class="axis"/>
+<text x="70.00" y="350" text-anchor="middle" class="tick">20</text>
+<line x1="234.00" y1="325" x2="234.00" y2="330" class="axis"/>
+<text x="234.00" y="350" text-anchor="middle" class="tick">500</text>
+<line x1="398.00" y1="325" x2="398.00" y2="330" class="axis"/>
+<text x="398.00" y="350" text-anchor="middle" class="tick">1000</text>
+<line x1="562.00" y1="325" x2="562.00" y2="330" class="axis"/>
+<text x="562.00" y="350" text-anchor="middle" class="tick">3000</text>
+<line x1="726.00" y1="325" x2="726.00" y2="330" class="axis"/>
+<text x="726.00" y="350" text-anchor="middle" class="tick">5000</text>
+<line x1="890.00" y1="325" x2="890.00" y2="330" class="axis"/>
+<text x="890.00" y="350" text-anchor="middle" class="tick">10000</text>
+<text x="480.0" y="368" text-anchor="middle" class="label">Array size</text>
+<text x="18" y="182.5" text-anchor="middle" class="label" transform="rotate(-90 18 182.5)">Time</text>
+<polyline points="70.00,324.74 234.00,320.39 398.00,314.77 562.00,295.83 726.00,261.55 890.00,225.22" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.74" r="4" fill="#2563eb"><title>linear_search / average_present | size 20: 516.00ns</title></circle>
+<circle cx="234.00" cy="320.39" r="4" fill="#2563eb"><title>linear_search / average_present | size 500: 9.00us</title></circle>
+<circle cx="398.00" cy="314.77" r="4" fill="#2563eb"><title>linear_search / average_present | size 1000: 20.00us</title></circle>
+<circle cx="562.00" cy="295.83" r="4" fill="#2563eb"><title>linear_search / average_present | size 3000: 57.00us</title></circle>
+<circle cx="726.00" cy="261.55" r="4" fill="#2563eb"><title>linear_search / average_present | size 5000: 124.00us</title></circle>
+<circle cx="890.00" cy="225.22" r="4" fill="#2563eb"><title>linear_search / average_present | size 10000: 195.00us</title></circle>
+<line x1="610" y1="48" x2="630" y2="48" stroke="#2563eb" stroke-width="3"/>
+<text x="638" y="52" class="legend">linear_search / average_present</text>
+<polyline points="70.00,324.49 234.00,313.23 398.00,299.93 562.00,233.41 726.00,185.31 890.00,40.00" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.49" r="4" fill="#dc2626"><title>linear_search / average_absent | size 20: 1.00us</title></circle>
+<circle cx="234.00" cy="313.23" r="4" fill="#dc2626"><title>linear_search / average_absent | size 500: 23.00us</title></circle>
+<circle cx="398.00" cy="299.93" r="4" fill="#dc2626"><title>linear_search / average_absent | size 1000: 49.00us</title></circle>
+<circle cx="562.00" cy="233.41" r="4" fill="#dc2626"><title>linear_search / average_absent | size 3000: 179.00us</title></circle>
+<circle cx="726.00" cy="185.31" r="4" fill="#dc2626"><title>linear_search / average_absent | size 5000: 273.00us</title></circle>
+<circle cx="890.00" cy="40.00" r="4" fill="#dc2626"><title>linear_search / average_absent | size 10000: 557.00us</title></circle>
+<line x1="610" y1="68" x2="630" y2="68" stroke="#dc2626" stroke-width="3"/>
+<text x="638" y="72" class="legend">linear_search / average_absent</text>
+<polyline points="70.00,324.80 234.00,324.49 398.00,324.57 562.00,323.98 726.00,324.49 890.00,324.49" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.80" r="4" fill="#16a34a"><title>binary_search / average_present | size 20: 399.00ns</title></circle>
+<circle cx="234.00" cy="324.49" r="4" fill="#16a34a"><title>binary_search / average_present | size 500: 1.00us</title></circle>
+<circle cx="398.00" cy="324.57" r="4" fill="#16a34a"><title>binary_search / average_present | size 1000: 850.00ns</title></circle>
+<circle cx="562.00" cy="323.98" r="4" fill="#16a34a"><title>binary_search / average_present | size 3000: 2.00us</title></circle>
+<circle cx="726.00" cy="324.49" r="4" fill="#16a34a"><title>binary_search / average_present | size 5000: 1.00us</title></circle>
+<circle cx="890.00" cy="324.49" r="4" fill="#16a34a"><title>binary_search / average_present | size 10000: 1.00us</title></circle>
+<line x1="610" y1="88" x2="630" y2="88" stroke="#16a34a" stroke-width="3"/>
+<text x="638" y="92" class="legend">binary_search / average_present</text>
+<polyline points="70.00,324.75 234.00,324.52 398.00,324.51 562.00,324.49 726.00,324.49 890.00,323.98" fill="none" stroke="#9333ea" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.75" r="4" fill="#9333ea"><title>binary_search / average_absent | size 20: 496.00ns</title></circle>
+<circle cx="234.00" cy="324.52" r="4" fill="#9333ea"><title>binary_search / average_absent | size 500: 940.00ns</title></circle>
+<circle cx="398.00" cy="324.51" r="4" fill="#9333ea"><title>binary_search / average_absent | size 1000: 950.00ns</title></circle>
+<circle cx="562.00" cy="324.49" r="4" fill="#9333ea"><title>binary_search / average_absent | size 3000: 1.00us</title></circle>
+<circle cx="726.00" cy="324.49" r="4" fill="#9333ea"><title>binary_search / average_absent | size 5000: 1.00us</title></circle>
+<circle cx="890.00" cy="323.98" r="4" fill="#9333ea"><title>binary_search / average_absent | size 10000: 2.00us</title></circle>
+<line x1="610" y1="108" x2="630" y2="108" stroke="#9333ea" stroke-width="3"/>
+<text x="638" y="112" class="legend">binary_search / average_absent</text>
+</svg>
+<svg viewBox="0 0 920 380" class="chart" role="img" aria-label="linear_search_vs_binary_search_on_sorted_arrays: comparisons">
+<text x="70" y="24" class="chart-title">linear_search_vs_binary_search_on_sorted_arrays: comparisons</text>
+<line x1="70" y1="40" x2="70" y2="325" class="axis"/>
+<line x1="70" y1="325" x2="890" y2="325" class="axis"/>
+<line x1="65" y1="325.00" x2="890" y2="325.00" class="grid"/>
+<text x="60" y="329.00" text-anchor="end" class="tick">0</text>
+<line x1="65" y1="268.00" x2="890" y2="268.00" class="grid"/>
+<text x="60" y="272.00" text-anchor="end" class="tick">2000</text>
+<line x1="65" y1="211.00" x2="890" y2="211.00" class="grid"/>
+<text x="60" y="215.00" text-anchor="end" class="tick">4000</text>
+<line x1="65" y1="154.00" x2="890" y2="154.00" class="grid"/>
+<text x="60" y="158.00" text-anchor="end" class="tick">6000</text>
+<line x1="65" y1="97.00" x2="890" y2="97.00" class="grid"/>
+<text x="60" y="101.00" text-anchor="end" class="tick">8000</text>
+<line x1="65" y1="40.00" x2="890" y2="40.00" class="grid"/>
+<text x="60" y="44.00" text-anchor="end" class="tick">10000</text>
+<line x1="70.00" y1="325" x2="70.00" y2="330" class="axis"/>
+<text x="70.00" y="350" text-anchor="middle" class="tick">20</text>
+<line x1="234.00" y1="325" x2="234.00" y2="330" class="axis"/>
+<text x="234.00" y="350" text-anchor="middle" class="tick">500</text>
+<line x1="398.00" y1="325" x2="398.00" y2="330" class="axis"/>
+<text x="398.00" y="350" text-anchor="middle" class="tick">1000</text>
+<line x1="562.00" y1="325" x2="562.00" y2="330" class="axis"/>
+<text x="562.00" y="350" text-anchor="middle" class="tick">3000</text>
+<line x1="726.00" y1="325" x2="726.00" y2="330" class="axis"/>
+<text x="726.00" y="350" text-anchor="middle" class="tick">5000</text>
+<line x1="890.00" y1="325" x2="890.00" y2="330" class="axis"/>
+<text x="890.00" y="350" text-anchor="middle" class="tick">10000</text>
+<text x="480.0" y="368" text-anchor="middle" class="label">Array size</text>
+<text x="18" y="182.5" text-anchor="middle" class="label" transform="rotate(-90 18 182.5)">Comparisons</text>
+<polyline points="70.00,324.70 234.00,318.07 398.00,309.99 562.00,281.46 726.00,256.90 890.00,182.81" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.70" r="4" fill="#2563eb"><title>linear_search / average_present | size 20: 10.64</title></circle>
+<circle cx="234.00" cy="318.07" r="4" fill="#2563eb"><title>linear_search / average_present | size 500: 243.32</title></circle>
+<circle cx="398.00" cy="309.99" r="4" fill="#2563eb"><title>linear_search / average_present | size 1000: 526.74</title></circle>
+<circle cx="562.00" cy="281.46" r="4" fill="#2563eb"><title>linear_search / average_present | size 3000: 1527.58</title></circle>
+<circle cx="726.00" cy="256.90" r="4" fill="#2563eb"><title>linear_search / average_present | size 5000: 2389.50</title></circle>
+<circle cx="890.00" cy="182.81" r="4" fill="#2563eb"><title>linear_search / average_present | size 10000: 4988.99</title></circle>
+<line x1="610" y1="48" x2="630" y2="48" stroke="#2563eb" stroke-width="3"/>
+<text x="638" y="52" class="legend">linear_search / average_present</text>
+<polyline points="70.00,324.43 234.00,310.75 398.00,296.50 562.00,239.50 726.00,182.50 890.00,40.00" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.43" r="4" fill="#dc2626"><title>linear_search / average_absent | size 20: 20</title></circle>
+<circle cx="234.00" cy="310.75" r="4" fill="#dc2626"><title>linear_search / average_absent | size 500: 500</title></circle>
+<circle cx="398.00" cy="296.50" r="4" fill="#dc2626"><title>linear_search / average_absent | size 1000: 1000</title></circle>
+<circle cx="562.00" cy="239.50" r="4" fill="#dc2626"><title>linear_search / average_absent | size 3000: 3000</title></circle>
+<circle cx="726.00" cy="182.50" r="4" fill="#dc2626"><title>linear_search / average_absent | size 5000: 5000</title></circle>
+<circle cx="890.00" cy="40.00" r="4" fill="#dc2626"><title>linear_search / average_absent | size 10000: 10000</title></circle>
+<line x1="610" y1="68" x2="630" y2="68" stroke="#dc2626" stroke-width="3"/>
+<text x="638" y="72" class="legend">linear_search / average_absent</text>
+<polyline points="70.00,324.82 234.00,324.58 398.00,324.52 562.00,324.42 726.00,324.38 890.00,324.32" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.82" r="4" fill="#16a34a"><title>binary_search / average_present | size 20: 6.42</title></circle>
+<circle cx="234.00" cy="324.58" r="4" fill="#16a34a"><title>binary_search / average_present | size 500: 14.86</title></circle>
+<circle cx="398.00" cy="324.52" r="4" fill="#16a34a"><title>binary_search / average_present | size 1000: 16.98</title></circle>
+<circle cx="562.00" cy="324.42" r="4" fill="#16a34a"><title>binary_search / average_present | size 3000: 20.34</title></circle>
+<circle cx="726.00" cy="324.38" r="4" fill="#16a34a"><title>binary_search / average_present | size 5000: 21.74</title></circle>
+<circle cx="890.00" cy="324.32" r="4" fill="#16a34a"><title>binary_search / average_present | size 10000: 23.70</title></circle>
+<line x1="610" y1="88" x2="630" y2="88" stroke="#16a34a" stroke-width="3"/>
+<text x="638" y="92" class="legend">binary_search / average_present</text>
+<polyline points="70.00,324.74 234.00,324.49 398.00,324.43 562.00,324.33 726.00,324.29 890.00,324.24" fill="none" stroke="#9333ea" stroke-width="2.5"/>
+<circle cx="70.00" cy="324.74" r="4" fill="#9333ea"><title>binary_search / average_absent | size 20: 9.24</title></circle>
+<circle cx="234.00" cy="324.49" r="4" fill="#9333ea"><title>binary_search / average_absent | size 500: 17.98</title></circle>
+<circle cx="398.00" cy="324.43" r="4" fill="#9333ea"><title>binary_search / average_absent | size 1000: 19.98</title></circle>
+<circle cx="562.00" cy="324.33" r="4" fill="#9333ea"><title>binary_search / average_absent | size 3000: 23.38</title></circle>
+<circle cx="726.00" cy="324.29" r="4" fill="#9333ea"><title>binary_search / average_absent | size 5000: 24.82</title></circle>
+<circle cx="890.00" cy="324.24" r="4" fill="#9333ea"><title>binary_search / average_absent | size 10000: 26.62</title></circle>
+<line x1="610" y1="108" x2="630" y2="108" stroke="#9333ea" stroke-width="3"/>
+<text x="638" y="112" class="legend">binary_search / average_absent</text>
+</svg>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Size</th><th>Algorithm</th><th>Scenario</th><th>Time</th><th>Time, ns</th><th>Comparisons</th></tr></thead>
+<tbody>
+<tr><td>20</td><td>linear_search</td><td>average_present</td><td>516ns</td><td>516</td><td>10.64</td></tr>
+<tr><td>20</td><td>linear_search</td><td>average_absent</td><td>1us</td><td>1000</td><td>20</td></tr>
+<tr><td>20</td><td>binary_search</td><td>average_present</td><td>399ns</td><td>399</td><td>6.42</td></tr>
+<tr><td>20</td><td>binary_search</td><td>average_absent</td><td>496ns</td><td>496</td><td>9.24</td></tr>
+<tr><td>500</td><td>linear_search</td><td>average_present</td><td>9us</td><td>9000</td><td>243.32</td></tr>
+<tr><td>500</td><td>linear_search</td><td>average_absent</td><td>23us</td><td>23000</td><td>500</td></tr>
+<tr><td>500</td><td>binary_search</td><td>average_present</td><td>1us</td><td>1000</td><td>14.86</td></tr>
+<tr><td>500</td><td>binary_search</td><td>average_absent</td><td>940ns</td><td>940</td><td>17.98</td></tr>
+<tr><td>1000</td><td>linear_search</td><td>average_present</td><td>20us</td><td>20000</td><td>526.74</td></tr>
+<tr><td>1000</td><td>linear_search</td><td>average_absent</td><td>49us</td><td>49000</td><td>1000</td></tr>
+<tr><td>1000</td><td>binary_search</td><td>average_present</td><td>850ns</td><td>850</td><td>16.98</td></tr>
+<tr><td>1000</td><td>binary_search</td><td>average_absent</td><td>950ns</td><td>950</td><td>19.98</td></tr>
+<tr><td>3000</td><td>linear_search</td><td>average_present</td><td>57us</td><td>57000</td><td>1527.58</td></tr>
+<tr><td>3000</td><td>linear_search</td><td>average_absent</td><td>179us</td><td>179000</td><td>3000</td></tr>
+<tr><td>3000</td><td>binary_search</td><td>average_present</td><td>2us</td><td>2000</td><td>20.34</td></tr>
+<tr><td>3000</td><td>binary_search</td><td>average_absent</td><td>1us</td><td>1000</td><td>23.38</td></tr>
+<tr><td>5000</td><td>linear_search</td><td>average_present</td><td>124us</td><td>124000</td><td>2389.50</td></tr>
+<tr><td>5000</td><td>linear_search</td><td>average_absent</td><td>273us</td><td>273000</td><td>5000</td></tr>
+<tr><td>5000</td><td>binary_search</td><td>average_present</td><td>1us</td><td>1000</td><td>21.74</td></tr>
+<tr><td>5000</td><td>binary_search</td><td>average_absent</td><td>1us</td><td>1000</td><td>24.82</td></tr>
+<tr><td>10000</td><td>linear_search</td><td>average_present</td><td>195us</td><td>195000</td><td>4988.99</td></tr>
+<tr><td>10000</td><td>linear_search</td><td>average_absent</td><td>557us</td><td>557000</td><td>10000</td></tr>
+<tr><td>10000</td><td>binary_search</td><td>average_present</td><td>1us</td><td>1000</td><td>23.70</td></tr>
+<tr><td>10000</td><td>binary_search</td><td>average_absent</td><td>2us</td><td>2000</td><td>26.62</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+</main>
+</body>
+</html>
