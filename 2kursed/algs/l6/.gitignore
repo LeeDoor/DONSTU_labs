@@ -1,0 +1,7 @@
+lab6_variant19
+build/
+*.o
+compile_commands.json
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
