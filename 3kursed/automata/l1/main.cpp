@@ -19,7 +19,7 @@ int main() {
     }
     Word word = *word_opt;
     std::cout << "Word: " << word << "\n";
-    std::cout << "Does word match alphabet: " << alphabet.does_word_match(word) << "\n";
+    std::cout << "Does word match alphabet: " << std::boolalpha << alphabet.does_word_match(word) << "\n";
     if(alphabet.does_word_match(word)) {
         auto number_opt = alphabet.get_number_of_word(word); 
         std::cout << "Word's number in this alphabet: " << *number_opt << "\n";
