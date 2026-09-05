@@ -65,10 +65,9 @@ std::optional<Alphabet::Number> Alphabet::get_number_of_word(const Word& word) c
         Letter letter = word[i];
         int i_k = get_position_of_letter(letter);
         result += i_k * ipow(n, k - i - 1);
-        std::cout << "(" << n << "^" << k - i - 1 << " * " << i_k << ")";
+        std::cout << "(" << n << "^" << k - i - 1 << " * " << i_k << ") ";
         if(i != word.size() - 1) std::cout << "  +  ";
     }
-    std::cout << "\n";
     return result;
 }
 Word Alphabet::get_word_from_number(Number number) const {
