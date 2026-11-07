@@ -4,3 +4,5 @@
 *.out
 build/
 *.o
+venv/
+__pycache__/
