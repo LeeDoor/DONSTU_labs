@@ -449,77 +449,81 @@ class LinearSystemSolverApp:
     def simple_iteration(self, a, b, tol, max_iter):
         n = len(a)
 
-        for i in range(n):
-            if abs(a[i][i]) <= 1e-15:
-                raise ValueError(
-                    f"На диагонали A[{i + 1},{i + 1}] ноль; "
-                    "переставьте уравнения."
-                )
+        normal_a = [
+            [
+                sum(a[k][i] * a[k][j] for k in range(n))
+                for j in range(n)
+            ]
+            for i in range(n)
+        ]
+        normal_b = [
+            sum(a[k][i] * b[k] for k in range(n))
+            for i in range(n)
+        ]
 
         log = [
             "МЕТОД ПРОСТЫХ ИТЕРАЦИЙ",
             "",
-            "ПРОВЕРКА ДИАГОНАЛЬНОГО ПРЕОБЛАДАНИЯ:",
+            "ИСХОДНАЯ СИСТЕМА:",
+            format_matrix(a, b),
+            "",
+            "НОРМАЛЬНАЯ СИСТЕМА AᵀA x = Aᵀb:",
+            format_matrix(normal_a, normal_b),
         ]
 
-        dominant = True
+        if not all(
+            math.isfinite(value)
+            for row in normal_a
+            for value in row
+        ) or not all(math.isfinite(value) for value in normal_b):
+            raise ValueError(
+                "Не удалось сформировать нормальную систему: "
+                "переполнение при вычислении AᵀA или Aᵀb."
+            )
+
+        scale = max(abs(normal_a[i][i]) for i in range(n))
+        lower = [[0.0] * n for _ in range(n)]
 
         for i in range(n):
-            diagonal = abs(a[i][i])
-            other_sum = sum(
-                abs(a[i][j])
+            for j in range(i + 1):
+                value = normal_a[i][j] - sum(
+                    lower[i][k] * lower[j][k]
+                    for k in range(j)
+                )
+
+                if i == j:
+                    if value <= scale * 1e-14:
+                        raise ValueError(
+                            "Матрица A вырождена или плохо обусловлена; "
+                            "нормальная система не имеет надежного "
+                            "единственного решения."
+                        )
+                    lower[i][j] = math.sqrt(value)
+                else:
+                    lower[i][j] = value / lower[j][j]
+
+        spectral_bound = max(
+            sum(
+                abs(normal_a[i][j])
+                / (math.sqrt(normal_a[i][i]) * math.sqrt(normal_a[j][j]))
                 for j in range(n)
-                if j != i
             )
-
-            passed = diagonal > other_sum
-
-            log.append(
-                f"Строка {i + 1}: "
-                f"|a{i + 1}{i + 1}| = {fmt(diagonal)}, "
-                f"сумма остальных модулей = {fmt(other_sum)}; "
-                f"{'условие выполнено' if passed else 'условие не выполнено'}."
-            )
-
-            if not passed:
-                dominant = False
-
-        log.append("")
-
-        if dominant:
-            log.append(
-                "Во всех строках выполняется строгое диагональное преобладание."
-            )
-        else:
-            log.append(
-                "Строгое диагональное преобладание выполняется не во всех строках. "
-                "Сходимость данным критерием не гарантируется."
-            )
-
-        normalized = []
-        beta = []
-
-        for i in range(n):
-            diagonal = a[i][i]
-            normalized.append([
-                a[i][j] / diagonal
-                for j in range(n)
-            ])
-            beta.append(b[i] / diagonal)
+            for i in range(n)
+        )
+        relaxation = 1.0 / spectral_bound
 
         log.extend([
             "",
-            "Система после деления каждой строки на диагональный коэффициент:",
-            format_matrix(normalized, beta),
+            "Решение нормальной системы методом Якоби с релаксацией.",
             "",
             "Начальное приближение:"
         ])
 
-        x = [b[i] / a[i][i] for i in range(n)]
+        x = [normal_b[i] / normal_a[i][i] for i in range(n)]
 
         log.extend([
             *[
-                f"x{i + 1}(0) = b{i + 1} / a{i + 1}{i + 1} = {fmt(x[i])}"
+                f"x{i + 1}(0) = {fmt(x[i])}"
                 for i in range(n)
             ],
             "",
@@ -549,27 +553,27 @@ class LinearSystemSolverApp:
 
         for k in range(1, max_iter + 1):
             new_x = [
-                b[i] / a[i][i]
-                - sum(
-                    a[i][j] / a[i][i] * x[j]
-                    for j in range(n)
-                    if j != i
-                )
+                x[i] + relaxation * (
+                    normal_b[i]
+                    - sum(normal_a[i][j] * x[j] for j in range(n))
+                ) / normal_a[i][i]
                 for i in range(n)
             ]
+
+            for value in new_x:
+                if not math.isfinite(value):
+                    raise ValueError(
+                        "Итерационный процесс стал неустойчивым. "
+                        "Проверьте обусловленность исходной матрицы."
+                    )
 
             differences = []
 
             for i in range(n):
                 difference = abs(new_x[i] - x[i])
-
-                if abs(new_x[i]) > 0.0:
-                    relative_difference = difference / abs(new_x[i])
-                elif difference == 0.0:
-                    relative_difference = 0.0
-                else:
-                    relative_difference = float("inf")
-
+                relative_difference = difference / max(
+                    abs(new_x[i]), 1.0
+                )
                 differences.append(relative_difference)
 
             values = (
@@ -590,6 +594,12 @@ class LinearSystemSolverApp:
             if all(value < tol for value in differences):
                 converged = True
                 break
+
+        if not converged:
+            raise ValueError(
+                f"Метод не сошелся за {max_iter} итераций. "
+                "Увеличьте максимальное число итераций."
+            )
 
         log.extend([
             "",
