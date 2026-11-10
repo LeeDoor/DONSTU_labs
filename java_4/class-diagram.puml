@@ -1,0 +1,52 @@
+@startuml
+class Chart {
+  - title: String
+  - horizontalAxis: Axis
+  - verticalAxis: Axis
+  - grid: Grid
+  - curves: List<Curve>
+  - legend: Legend
+  + render(): String
+}
+interface ChartElement {
+  + render(): String
+}
+class Axis {
+  - direction: Direction
+  - label: String
+  - minimum: double
+  - maximum: double
+  + render(): String
+}
+class Grid {
+  - verticalLineCount: int
+  - horizontalLineCount: int
+  + render(): String
+}
+class Curve {
+  - name: String
+  - expression: String
+  - color: String
+  - points: List<SamplePoint>
+  + render(): String
+}
+class SamplePoint {
+  - x: double
+  - y: double
+}
+class Legend {
+  - curves: List<Curve>
+  + render(): String
+}
+Chart ..|> ChartElement
+Axis ..|> ChartElement
+Grid ..|> ChartElement
+Curve ..|> ChartElement
+Legend ..|> ChartElement
+Chart *-- Axis
+Chart *-- Grid
+Chart *-- Curve
+Chart *-- Legend
+Curve *-- SamplePoint
+Legend o-- Curve
+@enduml
