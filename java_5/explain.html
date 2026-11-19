@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generics в Java для знакомых с шаблонами C++</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #526078;
+      --line: #dce3ed;
+      --paper: #ffffff;
+      --wash: #f3f6fb;
+      --blue: #175cd3;
+      --code: #101828;
+      --note: #eff8ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--wash);
+      color: var(--ink);
+      font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 930px;
+      margin: 36px auto;
+      padding: 42px 54px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 12px 36px #15233b12;
+    }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { margin-top: 0; font-size: 2.25rem; }
+    h2 {
+      margin-top: 2.2em;
+      padding-bottom: .35em;
+      border-bottom: 1px solid var(--line);
+    }
+    h3 { margin-top: 1.5em; }
+    p, li { color: var(--muted); }
+    strong { color: var(--ink); }
+    code {
+      padding: .12em .35em;
+      border-radius: 5px;
+      background: #eef2f7;
+      color: #233554;
+      font: .92em ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 18px 20px;
+      border-radius: 10px;
+      background: var(--code);
+      color: #e6edf7;
+      line-height: 1.55;
+      tab-size: 4;
+    }
+    pre code { padding: 0; background: none; color: inherit; }
+    .lead { font-size: 1.12rem; }
+    .note {
+      margin: 1.3em 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--blue);
+      border-radius: 4px;
+      background: var(--note);
+      color: var(--ink);
+    }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f7f9fc; color: var(--ink); }
+    footer { margin-top: 2.5em; color: var(--muted); font-size: .92rem; }
+    @media (max-width: 650px) {
+      main { margin: 0; padding: 26px 20px; border: 0; border-radius: 0; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Generics в Java: аналогии с шаблонами C++</h1>
+  <p class="lead">
+    Если вы знаете <em>templates</em> в C++, идея уже знакома: написать один
+    алгоритм или контейнер, который работает с несколькими типами. Java
+    generics решают похожую задачу, но устроены иначе — особенно во время
+    компиляции и выполнения программы.
+  </p>
+
+  <h2>1. Зачем нужны обобщения</h2>
+  <p>
+    Допустим, нужен список целых чисел, затем список строк. Без обобщений
+    пришлось бы писать отдельный класс для каждого типа либо хранить всё как
+    <code>Object</code> и вручную приводить тип при чтении. Второй вариант
+    компилируется даже при ошибочном смешивании данных, а ошибка может
+    проявиться только при выполнении.
+  </p>
+  <pre><code>// Без generics: тип элемента теряется
+List values = new ArrayList();
+values.add("привет");
+Integer number = (Integer) values.get(0); // ошибка во время выполнения
+
+// С generics: компилятор знает тип элементов
+List&lt;String&gt; words = new ArrayList&lt;&gt;();
+words.add("привет");
+String word = words.get(0); // приведение не требуется</code></pre>
+  <p>
+    <code>List&lt;String&gt;</code> читается как «список, элементы которого —
+    строки». Компилятор проверяет это ограничение: например, попытка добавить
+    туда <code>Integer</code> будет ошибкой компиляции.
+  </p>
+
+  <h2>2. Похожий синтаксис, но не тот же механизм, что в C++</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Тема</th><th>C++ templates</th><th>Java generics</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Пример параметра типа</td>
+          <td><code>template&lt;typename T&gt; class Box</code></td>
+          <td><code>class Box&lt;T&gt;</code></td>
+        </tr>
+        <tr>
+          <td>Как появляется код</td>
+          <td>Компилятор обычно инстанцирует код для конкретных аргументов шаблона.</td>
+          <td>Компилятор проверяет типы, затем в основном стирает параметры типов; во время выполнения нет отдельной версии класса для каждого T.</td>
+        </tr>
+        <tr>
+          <td>Что может быть параметром</td>
+          <td>Типы и, в зависимости от шаблона, значения времени компиляции.</td>
+          <td>Параметр generics — ссылочный тип. <code>int</code> напрямую нельзя, но компилятор автоматически упаковывает его в <code>Integer</code>.</td>
+        </tr>
+        <tr>
+          <td>Какие операции допустимы</td>
+          <td>Шаблон может использовать выражения, если они допустимы для конкретного T; это проверяется при инстанцировании.</td>
+          <td>В обобщённом коде доступно только то, что гарантируют границы типа (bounds).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Главное отличие:</strong> Java generics в первую очередь дают
+    статическую проверку типов и удобный API. Это не механизм генерации
+    специализированного машинного кода, как обычно ожидают от C++ templates.
+  </div>
+
+  <h2>3. Обобщённый класс и несколько параметров</h2>
+  <p>
+    Параметр пишется в угловых скобках после имени класса. По соглашению
+    используют короткие имена: <code>T</code> (тип), <code>E</code> (элемент),
+    <code>K</code> (ключ), <code>V</code> (значение).
+  </p>
+  <pre><code>public class Pair&lt;T, U&gt; {
+    public final T first;
+    public final U second;
+
+    public Pair(T first, U second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+
+Pair&lt;Integer, String&gt; result = new Pair&lt;&gt;(42, "ответ");
+Integer index = result.first;
+String label = result.second;</code></pre>
+  <p>
+    Здесь <code>T</code> и <code>U</code> независимы: первое поле может быть
+    числом, второе — строкой. Оператор <code>&lt;&gt;</code> при создании
+    объекта называется «ромб» (diamond): справа типы выводятся из левой части.
+  </p>
+  <p>
+    Для примитивов используются классы-обёртки: <code>Integer</code> вместо
+    <code>int</code>, <code>Double</code> вместо <code>double</code>,
+    <code>Boolean</code> вместо <code>boolean</code>. Автоупаковка позволяет
+    обычно писать <code>List&lt;Integer&gt; xs = ...; xs.add(5);</code> без
+    явного вызова конструктора обёртки.
+  </p>
+
+  <h2>4. Обобщённый метод</h2>
+  <p>
+    Метод может иметь собственный параметр типа, даже если его класс
+    необобщённый. Параметры метода объявляются перед возвращаемым типом:
+  </p>
+  <pre><code>import java.util.Arrays;
+import java.util.List;
+
+public static &lt;T&gt; T first(List&lt;T&gt; items) {
+    if (items.isEmpty()) {
+        throw new IllegalArgumentException("список пуст");
+    }
+    return items.get(0);
+}
+
+String word = first(Arrays.asList("один", "два"));
+Integer number = first(Arrays.asList(10, 20));</code></pre>
+  <p>
+    Компилятор обычно сам выводит <code>T</code> из аргументов. У статического
+    метода нет доступа к параметру типа экземпляра класса: если он нужен,
+    объявите собственный параметр непосредственно у метода, как в примере.
+  </p>
+
+  <h2>5. Границы параметра: что разрешено делать с T</h2>
+  <p>
+    В отличие от шаблона C++, Java не позволяет просто вызвать на неизвестном
+    <code>T</code> произвольный метод и отложить проверку до подстановки типа.
+    У компилятора должны быть гарантии. Их задаёт ограничение
+    <code>extends</code>:
+  </p>
+  <pre><code>class Box&lt;T extends Number&gt; {
+    private T value;
+
+    double asDouble() {
+        return value.doubleValue(); // метод гарантирован типом Number
+    }
+}</code></pre>
+  <p>
+    Ключевое слово <code>extends</code> используется и для интерфейсов:
+    <code>&lt;T extends Comparable&lt;T&gt;&gt;</code>. Несколько границ
+    записываются через <code>&amp;</code>, например
+    <code>&lt;T extends Number &amp; Comparable&lt;T&gt;&gt;</code>.
+  </p>
+  <p>
+    Такая граница похожа на требование к типу шаблона, но Java требует
+    выразить его через базовый класс или интерфейс. Она не позволяет
+    передавать примитивный <code>int</code>; передавайте
+    <code>Integer</code>.
+  </p>
+
+  <h2>6. Инвариантность: почему List&lt;Cat&gt; — не List&lt;Animal&gt;</h2>
+  <p>
+    Даже если <code>Cat</code> наследуется от <code>Animal</code>,
+    <code>List&lt;Cat&gt;</code> не является подтипом
+    <code>List&lt;Animal&gt;</code>. Если бы это было разрешено, в список кошек
+    можно было бы положить собаку через ссылку на список животных.
+  </p>
+  <pre><code>List&lt;Cat&gt; cats = new ArrayList&lt;&gt;();
+// List&lt;Animal&gt; animals = cats; // не компилируется: так безопаснее</code></pre>
+  <p>
+    Это называется <strong>инвариантностью</strong>. Она действует и для
+    пользовательских обобщённых классов, а не только для коллекций.
+  </p>
+
+  <h2>7. Wildcards и правило PECS</h2>
+  <p>
+    Если метод должен принять коллекцию нескольких совместимых типов, вместо
+    конкретного параметра типа можно использовать wildcard <code>?</code>.
+    Важны два варианта:
+  </p>
+  <ul>
+    <li>
+      <code>? extends Animal</code> — «какой-то неизвестный тип Animal или
+      его потомок». Из такой коллекции безопасно <strong>читать</strong>
+      Animal, но нельзя добавлять туда конкретную кошку: фактическая коллекция
+      может быть списком собак.
+    </li>
+    <li>
+      <code>? super Cat</code> — «какой-то неизвестный тип Cat или его
+      предок». В неё безопасно <strong>добавлять</strong> Cat; при чтении
+      гарантирован только Object.
+    </li>
+  </ul>
+  <pre><code>static double total(List&lt;? extends Number&gt; numbers) {
+    double sum = 0;
+    for (Number n : numbers) {
+        sum += n.doubleValue(); // читаем как Number
+    }
+    return sum;
+}
+
+static void addCats(List&lt;? super Cat&gt; destination) {
+    destination.add(new Cat()); // Cat можно записать и в List&lt;Animal&gt;
+}</code></pre>
+  <div class="note">
+    <strong>PECS:</strong> Producer Extends, Consumer Super. Если параметр
+    метода только поставляет значения для чтения — рассмотрите
+    <code>? extends T</code>. Если принимает значения для записи —
+    <code>? super T</code>. Это практическое правило, а не требование
+    применять wildcard везде.
+  </div>
+
+  <h2>8. Стирание типов (type erasure)</h2>
+  <p>
+    Java проверяет аргументы типов при компиляции, затем выполняет
+    <strong>стирание</strong>: в байткоде параметры типов заменяются их
+    верхней границей (обычно это <code>Object</code>). Компилятор вставляет
+    необходимые приведения при чтении. Для ограниченного параметра
+    <code>&lt;T extends Number&gt;</code> стирается до <code>Number</code>,
+    а не до Object.
+  </p>
+  <p>Практические последствия стирания:</p>
+  <ul>
+    <li><code>new T()</code> и <code>new T[10]</code> обычно запрещены: во время выполнения неизвестно, какой именно T создавать.</li>
+    <li><code>value instanceof List&lt;String&gt;</code> запрещено: объект во время выполнения не хранит аргумент <code>String</code>.</li>
+    <li>Нельзя объявить две перегрузки, различающиеся только параметрами типа, например <code>f(List&lt;String&gt;)</code> и <code>f(List&lt;Integer&gt;)</code>: после стирания обе имеют одинаковую сигнатуру.</li>
+    <li>В большинстве случаев нельзя создать массив параметризованного типа, например <code>new List&lt;String&gt;[10]</code>. Обычно используйте коллекцию.</li>
+  </ul>
+  <p>
+    Это отличие от обычной модели C++ templates: в Java параметры типов
+    предназначены прежде всего для проверок компилятора, а не для создания
+    отдельных runtime-типов <code>Box&lt;String&gt;</code> и
+    <code>Box&lt;Integer&gt;</code>.
+  </p>
+
+  <h2>9. Raw types — старый код без аргумента типа</h2>
+  <p>
+    Запись <code>List</code> без <code>&lt;...&gt;</code> называется raw type.
+    Она оставлена для совместимости со старым Java-кодом. Raw type отключает
+    часть проверок компилятора и может вернуть проблему с ошибочным
+    приведением типов. В новом коде указывайте параметр типа:
+    <code>List&lt;String&gt;</code>; если тип пока неизвестен, часто подходит
+    <code>List&lt;?&gt;</code>.
+  </p>
+
+  <h2>10. Короткий ориентир</h2>
+  <ol>
+    <li>Используйте <code>Class&lt;T&gt;</code>, когда сам класс хранит или обрабатывает значения одного типа.</li>
+    <li>Используйте <code>&lt;T&gt;</code> у метода, когда тип связывает аргумент с результатом или между несколькими аргументами.</li>
+    <li>Задавайте <code>extends</code>-границу, если обобщённому коду нужны методы базового типа или интерфейса.</li>
+    <li>Помните об инвариантности; для гибких параметров метода изучите <code>? extends T</code> и <code>? super T</code>.</li>
+    <li>Не рассчитывайте на доступ к аргументу типа во время выполнения: Java стирает его.</li>
+  </ol>
+  <footer>
+    В исходниках этой лабораторной идеи видны в <code>Pair&lt;T, U&gt;</code>,
+    <code>GPairBag&lt;T, U&gt;</code>, <code>DList&lt;T, U&gt;</code> и
+    <code>HashTable&lt;T, K&gt;</code>.
+  </footer>
+</main>
+</body>
+</html>
