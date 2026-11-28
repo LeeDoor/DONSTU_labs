@@ -6,3 +6,4 @@ build/
 *.o
 venv/
 __pycache__/
+/kursovaya/cinema.sqlite3
