@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Информационная система кинотеатра</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <button id="home-button" class="brand" type="button" title="Вернуться к выбору роли"><span class="brand-mark">К</span><span class="brand-text"><strong>Кинотеатр</strong><small>Информационная система</small></span></button>
+    <div class="top-actions"><span id="current-role" class="role-label"></span><button id="menu-button" class="button secondary hidden">К функциям</button><button id="exit-button" class="button secondary hidden">Сменить роль</button><button id="reset-data" class="button danger" type="button">Сбросить демо-базу</button></div>
+  </header>
+  <main>
+    <section id="role-view" class="view role-view">
+      <p class="eyebrow">ВХОД В СИСТЕМУ</p><h1>Выберите свою роль</h1><p class="intro">Для каждой роли доступны только связанные с ней рабочие функции.</p>
+      <div class="role-cards">
+        <button class="role-card" data-role="cashier"><span class="role-icon">₽</span><strong>Кассир</strong><small>Афиша, места, продажа билетов и кассовый отчёт</small><span class="card-arrow">Продолжить →</span></button>
+        <button class="role-card" data-role="admin"><span class="role-icon">⌘</span><strong>Администратор</strong><small>Фильмы, залы, расписание и отчёты кинотеатра</small><span class="card-arrow">Продолжить →</span></button>
+      </div>
+    </section>
+
+    <section id="menu-view" class="view hidden">
+      <div class="hero"><div><p class="eyebrow" id="menu-eyebrow"></p><h1 id="menu-title">Рабочие функции</h1><p id="menu-description"></p></div><div class="hero-date" id="today"></div></div>
+      <div class="function-grid" id="function-grid"></div>
+    </section>
+
+    <section id="function-view" class="view hidden">
+      <div class="function-heading"><div><p class="eyebrow" id="function-eyebrow"></p><h1 id="function-title"></h1></div><button id="back-to-menu" class="button secondary">← Все функции</button></div>
+
+      <section id="function-sale" class="function-content hidden">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">АФИША</p><h2>Выбор сеанса и мест</h2></div><button class="button secondary" id="refresh">Обновить афишу</button></div>
+          <div class="sale-layout"><div class="show-list"><label for="session-select">Сеанс</label><select id="session-select"></select><div id="session-card" class="session-card muted">Выберите сеанс, чтобы увидеть свободные места.</div><label for="employee-select">Кассир</label><select id="employee-select"></select><label for="payment-select">Способ оплаты</label><select id="payment-select"><option>Наличные</option><option>Карта</option><option>Онлайн</option></select></div>
+            <div class="seat-area"><div class="screen">ЭКРАН</div><div id="seat-map" class="seat-map"><p class="muted">Сначала выберите сеанс.</p></div><div class="legend"><span><i class="seat free"></i> Свободно</span><span><i class="seat chosen"></i> Выбрано</span><span><i class="seat sold"></i> Продано</span></div></div>
+          </div><div class="sale-footer"><span id="selection-summary">Билеты не выбраны</span><button class="button primary" id="sell" disabled>Оформить продажу</button></div>
+        </article>
+      </section>
+
+      <section id="function-search" class="function-content hidden">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">ПОИСК</p><h2>Заказ или билет</h2></div></div>
+          <form id="search-form" class="inline-form"><label for="search-term">Введите номер заказа или билета</label><input id="search-term" name="term" type="number" min="1" required><button class="button primary">Найти</button></form>
+          <div id="search-result" class="table-wrap search-result"></div>
+        </article>
+      </section>
+
+      <section id="function-shift-report" class="function-content hidden">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">КАССОВЫЕ ОПЕРАЦИИ</p><h2>Продажи за смену или период</h2></div><div class="date-filter"><label>С<input id="date-start" type="date"></label><label>По<input id="date-end" type="date"></label><button class="button secondary" id="load-sales">Показать</button></div></div><div class="table-wrap"><table><thead><tr><th>Дата продажи</th><th>Заказ</th><th>Билет</th><th>Фильм</th><th>Сеанс</th><th>Зал, место</th><th>Оплата</th><th>Сумма</th><th>Кассир</th></tr></thead><tbody id="sales-report"></tbody></table></div><div id="sales-total" class="report-total"></div></article>
+      </section>
+
+      <section id="function-films" class="function-content hidden">
+        <div class="columns"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">КАТАЛОГ</p><h2>Добавить фильм</h2></div></div><form id="film-form" class="form-grid"><label>Название<input name="title" required maxlength="200"></label><label>Жанр<input name="genre" required value="Драма"></label><label>Продолжительность, мин<input name="duration_min" type="number" min="1" max="600" required></label><label>Возрастное ограничение<select name="age_limit"><option>0+</option><option>6+</option><option>12+</option><option selected>16+</option><option>18+</option></select></label><label class="wide">Описание<textarea name="description" rows="2"></textarea></label><button class="button primary">Сохранить фильм</button></form></article>
+          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">СПРАВОЧНИК</p><h2>Фильмы в системе</h2></div></div><div class="table-wrap"><table><thead><tr><th>Код</th><th>Название</th><th>Жанр</th><th>Длительность</th><th>Возраст</th></tr></thead><tbody id="films-table"></tbody></table></div></article></div>
+      </section>
+
+      <section id="function-halls" class="function-content hidden">
+        <div class="columns"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">ЗАЛЫ И МЕСТА</p><h2>Добавить зал</h2></div></div><form id="hall-form" class="form-grid"><label>Название зала<input name="hall_name" required></label><label>Количество рядов<input name="rows" type="number" min="1" max="50" required></label><label>Мест в ряду<input name="seats_per_row" type="number" min="1" max="50" required></label><button class="button primary">Создать зал и места</button></form></article>
+          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">СПРАВОЧНИК</p><h2>Залы кинотеатра</h2></div></div><div class="table-wrap"><table><thead><tr><th>Номер</th><th>Зал</th><th>Рядов</th><th>Мест</th></tr></thead><tbody id="halls-table"></tbody></table></div></article></div>
+      </section>
+
+      <section id="function-schedule" class="function-content hidden">
+        <div class="columns"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">РАСПИСАНИЕ</p><h2>Назначить сеанс</h2></div></div><form id="session-form" class="form-grid"><label>Фильм<select name="film_code" id="film-select" required></select></label><label>Зал<select name="hall_no" id="hall-select" required></select></label><label>Дата и время<input name="starts_at" type="datetime-local" required></label><label>Цена билета<input name="ticket_price" type="number" min="0" step="0.01" required></label><button class="button primary">Добавить сеанс</button></form></article>
+          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">АФИША</p><h2>Запланированные сеансы</h2></div><button class="button secondary" id="refresh-schedule">Обновить</button></div><div class="table-wrap"><table><thead><tr><th>Дата и время</th><th>Фильм</th><th>Зал</th><th>Цена</th><th>Продано</th><th>Свободно</th></tr></thead><tbody id="schedule-table"></tbody></table></div></article></div>
+      </section>
+
+      <section id="function-session-report" class="function-content hidden">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">АНАЛИТИКА</p><h2>Посещаемость сеансов</h2></div><div class="date-filter"><label>С<input id="session-date-start" type="date"></label><label>По<input id="session-date-end" type="date"></label><button class="button secondary" id="load-sessions-report">Показать</button></div></div><div class="table-wrap"><table><thead><tr><th>Дата и время</th><th>Фильм</th><th>Зал</th><th>Вместимость</th><th>Продано</th><th>Заполняемость</th><th>Выручка</th></tr></thead><tbody id="sessions-report"></tbody></table></div></article>
+      </section>
+
+      <section id="function-employees" class="function-content hidden">
+        <div class="columns"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">СОТРУДНИКИ</p><h2>Добавить сотрудника</h2></div></div><form id="employee-form" class="form-grid"><label>Табельный номер<input name="employee_no" type="number" min="1" required></label><label>Фамилия<input name="surname" required></label><label>Имя<input name="first_name" required></label><label>Должность<input name="position" value="Кассир" required></label><button class="button primary">Добавить сотрудника</button></form></article>
+          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">ШТАТ</p><h2>Сотрудники кинотеатра</h2></div></div><div class="table-wrap"><table><thead><tr><th>Табельный номер</th><th>Фамилия</th><th>Имя</th><th>Должность</th></tr></thead><tbody id="employees-table"></tbody></table></div></article></div>
+      </section>
+    </section>
+  </main>
+  <div id="toast" role="status" class="toast" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
